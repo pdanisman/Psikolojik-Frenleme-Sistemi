@@ -297,8 +297,11 @@
 
         .chart-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
         .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 25px; }
-        .chart-header { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
+        .chart-header { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px; }
+        
+        /* GRAFİK AÇIKLAMALARI İÇİN EKLENEN CSS */
         .chart-desc { font-size: 13px; color: #6b7a8d; margin-bottom: 20px; line-height: 1.5; font-family: 'Rajdhani', sans-serif; border-left: 2px solid var(--accent); padding-left: 10px; }
+        
         .chart-container { position: relative; height: 250px; width: 100%; }
 
         .academic-box { background: rgba(0, 255, 136, 0.05); border: 1px solid rgba(0, 255, 136, 0.2); border-left: 4px solid #00ff88; padding: 30px; border-radius: 4px; margin-top: 20px; }
@@ -573,10 +576,9 @@
             </div>
             <div class="chart-card">
                 <div class="chart-header">📊 KAZA GEÇMİŞİ VE TEMKİNLİLİK</div>
-                <div class="chart-desc">Geçmişinde trafik kazası bulunan (Maddi/Yaralanmalı) sürücülerin tecrübeleri ile PFS'nin görsel şok uyarısı arasındaki korelasyon.</div>
+                <div class="chart-desc">Geçmişinde trafik kazası bulunan sürücülerin tecrübeleri ile PFS'nin görsel şok uyarısı arasındaki korelasyon.</div>
                 <div class="chart-container"><canvas id="accidentChart"></canvas></div>
             </div>
-        </div>
         </div>
 
         <div class="academic-box">
@@ -708,6 +710,7 @@ function renderGauge(canvasId, speed, mode, weather) {
 // ═══════════════════════════════════════
 // GOOGLE API VE ANALİZ MANTIĞI
 // ═══════════════════════════════════════
+// BURAYA KENDİ LİNKİNİ YAPIŞTIRMAYI UNUTMA!
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwixwofJoHkU8HrygJWh2AxMYSNHZMYlmkE26Tkdor3sRxpeSfwECkQUY2l5Bw8tKM/exec"; 
 let charts = {};
 
@@ -732,20 +735,48 @@ function showPage(p) {
             document.getElementById('kpi-drop').innerText = data.avgDrop;
             document.getElementById('text-drop').innerText = data.avgDrop;
 
-            Chart.defaults.color = '#8b9bb4'; Chart.defaults.font.family = "'Orbitron', sans-serif";
+            Chart.defaults.color = '#8b9bb4'; 
+            Chart.defaults.font.family = "'Orbitron', sans-serif";
+            
             const createChart = (id, type, dataObj, color) => {
                 if(charts[id]) charts[id].destroy(); 
                 const ctx = document.getElementById(id).getContext('2d');
                 charts[id] = new Chart(ctx, {
                     type: type,
-                    data: { labels: Object.keys(dataObj), datasets: [{ data: Object.values(dataObj), backgroundColor: color, borderRadius: 4 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } } }
+                    data: { 
+                        labels: Object.keys(dataObj), 
+                        datasets: [{ 
+                            data: Object.values(dataObj), 
+                            backgroundColor: color, 
+                            borderRadius: 4,
+                            barThickness: 45 // Barları ince ve zarif yaptık
+                        }] 
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        plugins: { legend: { display: false } }, 
+                        scales: { 
+                            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } }, 
+                            x: { grid: { display: false } } 
+                        } 
+                    }
                 });
             };
 
-            createChart('genderChart', 'bar', data.cinsiyet, 'rgba(0, 212, 255, 0.7)');
-            createChart('ageChart', 'bar', data.yas, 'rgba(255, 204, 0, 0.7)');
-            createChart('accidentChart', 'bar', data.kaza, 'rgba(46, 204, 113, 0.7)');
+            // Tire sorununu düzelten filtreleme
+            const cleanKeys = (obj) => {
+                let cleaned = {};
+                for(let k in obj) {
+                    let newK = k.replace('–', '-').trim();
+                    cleaned[newK] = obj[k]; 
+                }
+                return cleaned;
+            };
+
+            createChart('genderChart', 'bar', cleanKeys(data.cinsiyet), 'rgba(0, 212, 255, 0.7)');
+            createChart('ageChart', 'bar', cleanKeys(data.yas), 'rgba(255, 204, 0, 0.7)');
+            createChart('accidentChart', 'bar', cleanKeys(data.kaza), 'rgba(46, 204, 113, 0.7)');
             
             let zeminDataTR = {};
             if(data.zemin['dry']) zeminDataTR['Kuru Asfalt'] = data.zemin['dry'];
