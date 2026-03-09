@@ -423,7 +423,7 @@
             </div>
 
             <div class="instr-banner" id="instr-text">
-                <b>1. AŞAMA — KLASİK GÖSTERGE:</b> Kendinizi güvende hissettiğiniz en yüksek hıza çıkın ve hızınızı (±3 km/h toleransla) 3 saniye boyunca sabit tutun.
+                <b>1. AŞAMA — KLASİK GÖSTERGE:</b> Kendinizi güvende hissettiğiniz en yüksek hıza çıkın ve hızınızı (±3 km/h toleransla) 1 saniye boyunca sabit tutun.
             </div>
 
             <div class="gauge-container">
@@ -551,7 +551,7 @@
 
         <div id="pfs-explainer" style="display:none; margin-top:20px; background: rgba(255,51,0,0.06); border:1px solid rgba(255,51,0,0.2); border-radius:6px; padding:24px; font-size:16px; color:#a0aec0; line-height:1.7;">
             <b style="color:var(--accent); font-family:'Orbitron',sans-serif; font-size:12px; letter-spacing:3px;">PFS MATEMATİĞİ</b><br><br>
-            Bu kadranda sayılar eşit dağılmaz. 0–60 km/h arası genişken, tehlikeli hızlar dar açılara sıkıştırılmıştır. Ayrıca hesaplamaya insan doğası gereği olan <b>3 saniyelik reaksiyon süresi (intikal)</b> de dahildir.<br><br>
+            Bu göstergede hız ölçeğinin üstünde fren mesafesi barı yerleştirilmiştir. Bar 120km çizgisine geldiğinde fren mesafeniz 120mt yi göstermektedir. Ayrıca hesaplamaya insan doğası gereği olan <b>3 saniyelik reaksiyon süresi (intikal)</b> de dahildir.<br><br>
             Şu an <span id="pfs-explainer-speed" style="color:#fff; font-family:'Orbitron',sans-serif; font-weight:700;">0 KM/H</span> hızla giderken aniden durmanız gerekirse; önce reaksiyon verecek, sonra fren yapacaksınız ve tam olarak <span id="pfs-explainer-dist" style="color:var(--accent); font-family:'Orbitron',sans-serif; font-weight:700; font-size:20px;">0 METRE</span> sonra durabileceksiniz.
         </div>
     </div>
@@ -834,19 +834,26 @@ function updateTest() {
     const bar = document.getElementById('test-danger-bar');
     bar.style.width = (ratio * 100) + '%'; bar.style.background = dangerColor(ratio);
 
-    if (testSpeed > 40) {
-        if (Math.abs(testSpeed - baselineSpeed) <= 8) {
+if (testSpeed > 40) {
+        // BURASI DÜZELDİ: Tolerans 8'den 5'e indirildi (±5 km/h)
+        if (Math.abs(testSpeed - baselineSpeed) <= 5) {
             stabilityTimer += 0.016;
             document.getElementById('test-recording-status').style.opacity = 1;
             const sc = document.getElementById('stability-counter');
             sc.style.opacity = 1;
+            
+            // Saniye mantığını harika kurmuşsun, burası 1 saniye için tamamen doğru:
             sc.innerText = Math.max(0, 1 - stabilityTimer) > 0 ? `${Math.max(0, 1 - stabilityTimer).toFixed(1)}s` : 'KAYIT ALINDI';
 
+            // Buradaki sınır da 1 saniye için doğru:
             if (stabilityTimer > 1) {
                 if (testPhase === 1) {
                     normalSpeed = baselineSpeed; testPhase = 2; testMode = 2; stabilityTimer = 0; testSpeed = 0;
                     document.getElementById('test-recording-status').style.opacity = 0; document.getElementById('stability-counter').style.opacity = 0;
-                    document.getElementById('instr-text').innerHTML = '<b>2. AŞAMA — PFS GÖSTERGE:</b> Aynı şekilde kendinizi güvende hissettiğiniz en yüksek hıza çıkın ve 3 saniye sabitleyin.';
+                    
+                    // BURASI DÜZELDİ: 2. aşama metnindeki "3 saniye" yazısı "1 saniye" yapıldı
+                    document.getElementById('instr-text').innerHTML = '<b>2. AŞAMA — PFS GÖSTERGE:</b> Aynı şekilde kendinizi güvende hissettiğiniz en yüksek hıza çıkın ve 1 saniye sabitleyin.';
+                    
                     document.getElementById('test-mode-badge').className = 'mode-badge pfs'; document.getElementById('test-mode-badge').innerText = 'PFS GÖSTERGESİ';
                     document.getElementById('pd1').className = 'phase-dot done'; document.getElementById('pd2').className = 'phase-dot active';
                 } else if (testPhase === 2) {
