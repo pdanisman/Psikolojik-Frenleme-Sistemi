@@ -835,14 +835,14 @@ function updateTest() {
     bar.style.width = (ratio * 100) + '%'; bar.style.background = dangerColor(ratio);
 
     if (testSpeed > 40) {
-        if (Math.abs(testSpeed - baselineSpeed) <= 5) {
+        if (Math.abs(testSpeed - baselineSpeed) <= 8) {
             stabilityTimer += 0.016;
             document.getElementById('test-recording-status').style.opacity = 1;
             const sc = document.getElementById('stability-counter');
             sc.style.opacity = 1;
-            sc.innerText = Math.max(0, 2 - stabilityTimer) > 0 ? `${Math.max(0, 2 - stabilityTimer).toFixed(1)}s` : 'KAYIT ALINDI';
+            sc.innerText = Math.max(0, 1 - stabilityTimer) > 0 ? `${Math.max(0, 1 - stabilityTimer).toFixed(1)}s` : 'KAYIT ALINDI';
 
-            if (stabilityTimer > 2) {
+            if (stabilityTimer > 1) {
                 if (testPhase === 1) {
                     normalSpeed = baselineSpeed; testPhase = 2; testMode = 2; stabilityTimer = 0; testSpeed = 0;
                     document.getElementById('test-recording-status').style.opacity = 0; document.getElementById('stability-counter').style.opacity = 0;
