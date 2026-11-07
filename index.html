@@ -503,8 +503,8 @@ function advanceSpeed(s, dt, gas, brake) {
 // ═══════════════════════════════════════════════════════════
 function angleForSpeed(v, pfs) {
   const s = Math.PI;
-  return pfs ? s + Math.min(getDist(v, 'dry') / PFS_MAX_DIST, 1) * Math.PI
-             : s + (Math.min(v, MAX_SPEED) / MAX_SPEED) * Math.PI;
+  // PFS daraltmasını iptal ettik. Kadran HER ZAMAN doğrusal ve eşit aralıklı kalacak.
+  return s + (Math.min(v, MAX_SPEED) / MAX_SPEED) * Math.PI;
 }
 function renderGauge(canvas, speed, gauge, weather) {
   const pfs = gauge === 'pfs';
@@ -518,7 +518,8 @@ function renderGauge(canvas, speed, gauge, weather) {
 
   if (pfs && speed > 0) {
     const distM = getDist(speed, weather);
-    const dAng = startA + Math.min(distM / PFS_MAX_DIST, 1) * Math.PI;   // düzeltilmiş: mesafe doğrudan ölçeğe oranlanır
+    // PFS_MAX_DIST yerine MAX_SPEED yazdık. Böylece 142 metre, tam olarak 142 rakamına uzanacak.
+    const dAng = startA + Math.min(distM / MAX_SPEED, 1) * Math.PI;
     const grad = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
     grad.addColorStop(0, '#2ecc71'); grad.addColorStop(.45, '#ffcc00'); grad.addColorStop(.75, '#ff8800'); grad.addColorStop(1, '#ff3300');
     ctx.beginPath(); ctx.arc(cx, cy, R - 26, startA, dAng); ctx.strokeStyle = grad; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.stroke();
