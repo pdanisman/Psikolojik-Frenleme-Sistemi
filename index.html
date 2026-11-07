@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psikolojik Frenleme Sistemi (PFS) | Boğazlıyan BİLSEM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--accent:#ff3300;--accent-glow:rgba(255,51,0,.4);--dry:#ffcc00;--rain:#00ff88;--ice:#00d4ff;--bg:#040608;--surface:#0a0d12;--surface-light:#121824;--border:#1a2030;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:#fff;overflow-x:hidden;scroll-behavior:smooth;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.fade-up{animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards}.delay-1{animation-delay:.2s}.delay-2{animation-delay:.4s}
+
+nav{background:rgba(4,6,8,.95);padding:0 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;min-height:60px;backdrop-filter:blur(10px);flex-wrap:wrap;gap:6px}
+.nav-brand{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:var(--accent);letter-spacing:4px;text-shadow:0 0 10px var(--accent-glow)}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{color:#6b7a8d;cursor:pointer;font-size:12px;letter-spacing:2px;font-weight:700;padding:10px 16px;border-radius:4px;transition:all .3s;font-family:'Orbitron',sans-serif}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,.05)}
+.nav-link.active{color:var(--accent);background:rgba(255,51,0,.08);box-shadow:inset 0 -2px 0 var(--accent)}
+
+.page{display:none}.page.active{display:block;animation:fadeUp .5s ease-out forwards}
+
+.hero{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;position:relative;background:radial-gradient(circle at 50% 30%,rgba(255,51,0,.08) 0%,transparent 60%),linear-gradient(rgba(4,6,8,0) 0%,var(--bg) 100%)}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;z-index:-1;mask-image:radial-gradient(circle at center,black 40%,transparent 80%);-webkit-mask-image:radial-gradient(circle at center,black 40%,transparent 80%)}
+.hero-badge{display:inline-block;background:rgba(255,51,0,.1);border:1px solid rgba(255,51,0,.3);color:var(--accent);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:4px;padding:8px 16px;border-radius:50px;margin-bottom:24px}
+.hero-title{font-family:'Orbitron',sans-serif;font-size:clamp(30px,6vw,72px);font-weight:900;line-height:1.1;margin-bottom:20px;letter-spacing:-1px;text-transform:uppercase}
+.hero-title span{color:transparent;-webkit-text-stroke:2px var(--accent);text-shadow:0 0 20px var(--accent-glow)}
+.hero-sub{font-size:20px;color:#8b9bb4;max-width:700px;line-height:1.6;margin-bottom:40px}.hero-sub b{color:#fff;font-weight:600}
+.cta-btn{background:var(--accent);color:#fff;padding:16px 40px;border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:13px;letter-spacing:3px;text-transform:uppercase;font-family:'Orbitron',sans-serif;transition:all .3s;box-shadow:0 10px 30px rgba(255,51,0,.2)}
+.cta-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 15px 40px rgba(255,51,0,.4);background:#ff471a}
+.cta-btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-secondary{background:transparent;color:#8b9bb4;padding:14px 28px;border:1px solid #2d3748;border-radius:4px;font-weight:700;cursor:pointer;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-family:'Orbitron',sans-serif;transition:all .2s}
+.btn-secondary:hover{border-color:#cbd5e1;color:#fff}
+
+.info-section{max-width:1100px;margin:0 auto;padding:70px 24px}
+.section-header{text-align:center;margin-bottom:50px}
+.sec-label{font-family:'Orbitron',sans-serif;font-size:12px;color:#6b7a8d;letter-spacing:5px;margin-bottom:10px}
+.sec-title{font-family:'Orbitron',sans-serif;font-size:30px;font-weight:700}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:36px 28px;transition:transform .3s,border-color .3s}
+.info-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.2)}
+.card-icon{font-size:40px;margin-bottom:18px;display:block}
+.info-card h3{font-family:'Orbitron',sans-serif;font-size:17px;color:var(--accent);margin-bottom:14px}
+.info-card p{font-size:16px;color:#8b9bb4;line-height:1.6}
+.methodology{display:flex;background:var(--surface-light);border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-top:50px}
+.method-text{padding:44px;flex:1}
+.method-text h3{font-family:'Orbitron',sans-serif;font-size:22px;margin-bottom:18px}
+.method-text p{font-size:17px;color:#a0aec0;line-height:1.7;margin-bottom:12px}
+.highlight-box{background:rgba(255,51,0,.1);border-left:4px solid var(--accent);padding:18px;margin-top:24px;font-size:16px;line-height:1.6;color:#fff}
+.rq-box{background:rgba(0,212,255,.06);border-left:4px solid var(--ice);padding:18px;margin-top:24px;font-size:17px;line-height:1.6;color:#e6f7ff}
+
+.test-wrapper,.sim-wrapper{max-width:900px;margin:0 auto;padding:30px 20px}
+.content-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:34px;margin-bottom:20px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:11px;letter-spacing:2px;color:#6b7a8d;font-family:'Orbitron',sans-serif;margin-bottom:8px}
+select,input[type=text]{width:100%;padding:14px 16px;background:#0d1117;border:1px solid var(--border);color:#fff;border-radius:4px;font-family:'Rajdhani',sans-serif;font-size:16px}
+select:focus{outline:none;border-color:var(--accent)}
+.step-title{font-family:'Orbitron',sans-serif;font-size:19px;font-weight:700;margin-bottom:24px}
+.step-tag{font-size:10px;letter-spacing:3px;color:var(--accent);font-family:'Orbitron',sans-serif;margin-bottom:8px}
+.consent-text{font-size:16px;line-height:1.65;color:#b8c4d6;max-height:340px;overflow:auto;padding:18px;background:#0d1117;border:1px solid var(--border);border-radius:6px;margin-bottom:18px}
+.consent-text h4{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;color:var(--accent);margin:14px 0 6px}
+.consent-text h4:first-child{margin-top:0}
+.consent-text li{margin-left:20px}
+.check-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;font-size:17px;line-height:1.5;cursor:pointer}
+.check-row input{width:22px;height:22px;margin-top:3px;accent-color:#ff3300;flex:none}
+
+.phase-track{display:flex;gap:5px;margin-bottom:14px}
+.phase-dot{flex:1;height:5px;border-radius:2px;background:#1a2030;transition:background .4s}
+.phase-dot.done{background:#2ecc71}.phase-dot.active{background:var(--accent);box-shadow:0 0 10px var(--accent-glow)}
+.trial-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;color:#8b9bb4}
+.trial-meta b{color:#fff}
+.instr-banner{background:rgba(255,51,0,.08);border:1px solid rgba(255,51,0,.3);border-radius:4px;padding:14px 18px;font-size:18px;line-height:1.5;margin-bottom:16px;color:#fff}
+.gradient-heading{text-align:center;color:#fff;font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:3px;padding:12px 0;margin-bottom:14px;background:linear-gradient(90deg,transparent 0%,rgba(255,51,0,.7) 50%,transparent 100%);border-radius:4px;text-shadow:0 0 8px rgba(255,51,0,.8);font-weight:700}
+
+.gauge-container{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px;position:relative;overflow:hidden}
+canvas.road-canvas{display:block;width:100%;height:auto;border-radius:6px;margin-bottom:14px;border:1px solid #1a2030;background:#000}
+.gauge-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.mode-badge{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;padding:8px 14px;border-radius:4px;font-weight:700}
+.mode-badge.classic{background:rgba(0,212,255,.08);color:#00d4ff;border:1px solid rgba(0,212,255,.3)}
+.mode-badge.pfs{background:rgba(255,51,0,.12);color:var(--accent);border:1px solid rgba(255,51,0,.3)}
+.mode-badge.dist{background:rgba(255,204,0,.08);color:#ffcc00;border:1px solid rgba(255,204,0,.3)}
+.readout-panel{display:flex;gap:26px;margin-bottom:8px;flex-wrap:wrap}
+.readout-label{font-size:11px;letter-spacing:3px;color:#6b7a8d;font-family:'Orbitron',sans-serif;margin-bottom:6px}
+.readout-value{font-family:'Orbitron',sans-serif;font-size:44px;font-weight:900;line-height:1;transition:color .3s}
+.readout-unit{font-size:14px;color:#6b7a8d;font-family:'Orbitron',sans-serif;margin-left:6px}
+.danger-bar-wrap{height:6px;background:#0d1117;border-radius:3px;margin-bottom:12px;overflow:hidden;width:min(340px,100%)}
+.danger-bar-fill{height:100%;border-radius:3px;transition:background .3s}
+.dist-legend{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap}
+.dist-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#8b9bb4;font-family:'Orbitron',sans-serif;letter-spacing:1px}
+.dist-legend-dot{width:12px;height:12px;border-radius:50%}
+canvas.gauge-canvas{display:block;width:100%;height:auto;margin:0 auto}
+.pedal-row{display:flex;gap:16px;justify-content:flex-end;margin-top:16px}
+.pedal{width:100px;height:120px;border-radius:6px;font-family:'Orbitron',sans-serif;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:1px;transition:all .1s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;user-select:none;-webkit-user-select:none;touch-action:none}
+.pedal-icon{font-size:24px}
+.pedal.gas{border:1px solid rgba(46,204,113,.4);color:#2ecc71;background:rgba(46,204,113,.05)}
+.pedal.gas.active{background:rgba(46,204,113,.15);border-color:#2ecc71;box-shadow:0 0 20px rgba(46,204,113,.3);transform:translateY(4px)}
+.pedal.brake{border:1px solid rgba(231,76,60,.4);color:#e74c3c;background:rgba(231,76,60,.05)}
+.pedal.brake.active{background:rgba(231,76,60,.15);border-color:#e74c3c;box-shadow:0 0 20px rgba(231,76,60,.3);transform:translateY(4px)}
+.toggle-group{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;justify-content:center}
+.toggle-btn{padding:10px 18px;border-radius:4px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;font-weight:700;transition:all .2s;border:1px solid transparent;background:rgba(255,255,255,.04);color:#6b7a8d}
+.toggle-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.toggle-btn.dry.active-btn{background:rgba(255,204,0,.15);border-color:rgba(255,204,0,.4);color:#ffcc00}
+.toggle-btn.rain.active-btn{background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.3);color:#00ff88}
+.toggle-btn.ice.active-btn{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:#00d4ff}
+.toggle-btn.g.active-btn{background:rgba(255,51,0,.12);border-color:rgba(255,51,0,.4);color:var(--accent)}
+.recording-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);border-radius:20px;padding:6px 14px;font-size:12px;font-family:'Orbitron',sans-serif;letter-spacing:1px;color:#00ff88;opacity:0;transition:opacity .3s}
+.rec-dot{width:8px;height:8px;background:#00ff88;border-radius:50%;animation:blink 1s infinite}
+#stability-counter{font-family:'Orbitron',sans-serif;font-size:14px;color:#2ecc71;letter-spacing:2px;font-weight:bold;opacity:0;transition:opacity .3s;margin-top:8px;text-align:right}
+.overlay-msg{position:absolute;inset:0;background:rgba(4,6,8,.86);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:5;font-family:'Orbitron',sans-serif;padding:20px}
+.overlay-msg .big{font-size:26px;font-weight:900;letter-spacing:3px;margin-bottom:10px}
+.overlay-msg .small{font-size:13px;color:#8b9bb4;letter-spacing:2px}
+
+#result-screen{position:fixed;inset:0;background:rgba(4,6,8,.98);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:9999;padding:20px;overflow:auto}
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:34px;max-width:680px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.5);margin:auto}
+.result-title{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:#2ecc71;margin-bottom:22px;letter-spacing:2px}
+.result-speeds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:18px}
+.result-speed-box{background:#0d1117;padding:18px 8px;border-radius:4px}
+.result-speed-label{font-size:10px;letter-spacing:2px;color:#6b7a8d;font-family:'Orbitron',sans-serif;margin-bottom:10px}
+.result-speed-val{font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900}
+.result-table{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:15px}
+.result-table th,.result-table td{border-bottom:1px solid var(--border);padding:7px 6px;text-align:center}
+.result-table th{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;color:#6b7a8d}
+.result-message{padding:16px;border-radius:4px;font-size:17px;line-height:1.55;margin-bottom:18px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.2);color:#cfefff}
+.pid-box{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:#ffcc00;margin-bottom:16px}
+.pid-note{font-size:14px;color:#8b9bb4;margin-top:6px;letter-spacing:0;font-family:'Rajdhani',sans-serif}
+.send-status{min-height:22px;font-size:15px;margin-bottom:12px}
+
+.analysis-dashboard{max-width:1200px;margin:0 auto;padding:30px 20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-bottom:26px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:26px 18px;text-align:center;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--accent)}
+.kpi-label{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:#8b9bb4;margin-bottom:14px}
+.kpi-value{font-family:'Orbitron',sans-serif;font-size:40px;font-weight:900;line-height:1.1}
+.kpi-value small{font-size:16px;color:#6b7a8d}
+.kpi-sub{font-size:15px;color:#fff;margin-top:10px;font-weight:600}
+.chart-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:20px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px}
+.chart-header{font-family:'Orbitron',sans-serif;font-size:14px;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;font-weight:bold}
+.chart-desc{font-size:15px;color:#fff;margin-bottom:14px;line-height:1.55;border-left:3px solid var(--accent);padding-left:12px}
+.chart-container{position:relative;height:260px;width:100%}
+.stat-table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 20px}
+.stat-table th,.stat-table td{padding:8px 6px;border-bottom:1px solid var(--border);text-align:center}
+.stat-table th{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;color:#8b9bb4}
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:20px}
+.academic-box{background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.2);border-left:4px solid #00ff88;padding:26px;border-radius:4px;margin-top:20px}
+.academic-title{font-family:'Orbitron',sans-serif;font-size:15px;color:#00ff88;letter-spacing:2px;margin-bottom:14px;font-weight:bold}
+.academic-text{font-size:18px;color:#fff;line-height:1.7}
+.spss-tag{display:inline-block;background:#121824;padding:6px 12px;border-radius:4px;font-size:12px;color:#cbd5e1;font-family:monospace;margin-top:14px;border:1px solid #1a2030}
+.small-note{font-size:14px;color:#8b9bb4;line-height:1.6;margin-top:10px}
+
+footer{background:#030406;border-top:1px solid var(--border);padding:36px 20px;text-align:center;margin-top:50px}
+.footer-logo{font-family:'Orbitron',sans-serif;font-size:20px;color:#4a5568;margin-bottom:14px;letter-spacing:2px}
+.footer-text{color:#6b7a8d;font-size:14px;line-height:1.8;letter-spacing:1px}
+.footer-highlight{color:#fff;font-weight:700}.footer-glow{color:var(--accent);text-shadow:0 0 10px rgba(255,51,0,.5);font-weight:700}
+
+#pedal-fab{position:fixed;right:16px;bottom:16px;z-index:2000;padding:10px 16px;background:#121824;color:#fff;border:1px solid #ff3300;border-radius:4px;font:700 11px Orbitron,sans-serif;letter-spacing:2px;cursor:pointer}
+#pedal-panel{position:fixed;right:16px;bottom:64px;z-index:2000;width:min(330px,calc(100vw - 32px));padding:16px;background:#0a0d12;border:1px solid #1a2030;border-radius:6px;display:none;font:600 14px Rajdhani,sans-serif;color:#cbd5e1}
+#pedal-panel button{padding:8px 12px;margin:0 6px 6px 0;background:#121824;color:#fff;border:1px solid #2d3748;border-radius:4px;cursor:pointer;font:600 13px Rajdhani,sans-serif}
+.meter{height:8px;background:#0d1117;border-radius:4px;margin:4px 0 10px;overflow:hidden}.meter>div{height:100%;width:0}
+
+@media(max-width:768px){
+  nav{padding:8px 14px}.nav-link{padding:8px 10px;font-size:10px;letter-spacing:1px}.nav-brand{font-size:13px}
+  .chart-grid{grid-template-columns:1fr}.methodology{flex-direction:column}.method-text{padding:26px}
+  .content-box{padding:22px}.readout-value{font-size:34px}.pedal{width:42vw;height:110px}.pedal-row{justify-content:space-between}
+  .result-speeds{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">PFS PROJESİ</div>
+  <div class="nav-links">
+    <div class="nav-link active" data-page="home">ANA SAYFA</div>
+    <div class="nav-link" data-page="test">SİMÜLASYON TESTİ</div>
+    <div class="nav-link" data-page="free">SERBEST SÜRÜŞ</div>
+    <div class="nav-link" data-page="analysis">AKADEMİK ANALİZ</div>
+  </div>
+</nav>
+
+<!-- ═════════ ANA SAYFA ═════════ -->
+<div id="home" class="page active">
+  <div class="hero fade-up">
+    <div class="hero-badge">ARAŞTIRMA & GELİŞTİRME PROJESİ</div>
+    <h1 class="hero-title">PSİKOLOJİK<br><span>FRENLEME</span><br>SİSTEMİ</h1>
+    <p class="hero-sub">Klasik hız göstergesi hızı doğrusal gösterir, fren mesafesi ise <b>hızın karesiyle</b> büyür. Göstergeye durma mesafesini eklersek insanların "güvenli" bulduğu hız değişir mi? Bu çalışma bunu ölçüyor.</p>
+    <button class="cta-btn" data-page="test">Teste Katıl</button>
+  </div>
+
+  <div class="info-section fade-up delay-1">
+    <div class="section-header">
+      <div class="sec-label">PROBLEM TANIMI</div>
+      <h2 class="sec-title">Görünmez Tehlike: Hızın İzolasyonu</h2>
+    </div>
+    <div class="grid-3">
+      <div class="info-card"><span class="card-icon">🔇</span><h3>Sessiz Motorlar</h3><p>Modern araçlardaki yalıtım motor ve rüzgâr sesini kabine iletmez. Hızı işitsel olarak algılayamamak "yavaş gidiyorum" izlenimi yaratabilir.</p></div>
+      <div class="info-card"><span class="card-icon">🛣️</span><h3>Sarsıntısız Sürüş</h3><p>Gelişmiş süspansiyon sistemleri yüksek hızda bile yolun düz ve sakin hissedilmesine yol açar.</p></div>
+      <div class="info-card"><span class="card-icon">📏</span><h3>Doğrusal Göstergeler</h3><p>Klasik kadranda sayılar arası mesafe eşittir. Oysa durma mesafesi hızla karesel artar: 80'den 120 km/h'e çıkınca yalnızca frenleme mesafesi 2,25 katına, 3 sn tepki süresiyle toplam durma mesafesi yaklaşık 1,7 katına çıkar.</p></div>
+    </div>
+
+    <div class="methodology">
+      <div class="method-text">
+        <div class="sec-label">ARAŞTIRMA SORUSU</div>
+        <h3>Fren Mesafesi Görünür Olursa Seçilen Hız Değişir mi?</h3>
+        <p>Psikolojik Frenleme Sistemi (PFS), kadranı hıza değil o hızdaki <b>toplam durma mesafesine</b> (3 sn tepki süresi + karesel frenleme) göre ölçeklendirir.</p>
+        <div class="rq-box"><b>Hipotez (H₁):</b> PFS göstergesiyle katılımcıların "güvende hissettiği en yüksek hız", klasik göstergeye göre daha düşüktür.<br><b>Sıfır hipotezi (H₀):</b> İki göstergede seçilen hız arasında fark yoktur.</div>
+        <div class="highlight-box"><b style="color:var(--accent)">Olası uygulama:</b> Bulgular destekleyici çıkarsa bu fikir dijital kokpitlere yazılım güncellemesiyle (ör. yerli otomobil TOGG gibi dijital göstergeli araçlar) ya da artırılmış gerçeklik başlıklı ekranlara uyarlanabilir. Bu, bir öneridir; bu çalışmanın sonuçları gerçek sürüşü değil simülasyon tercihlerini ölçer.</div>
+      </div>
+    </div>
+
+    <div class="methodology" style="margin-top:24px">
+      <div class="method-text">
+        <div class="sec-label">ETİK VE GİZLİLİK</div>
+        <p>Teste katılım <b>gönüllüdür</b> ve <b>18 yaş ve üzeri</b> kişilere açıktır. Ad, e-posta veya benzeri kimlik bilgisi istenmez. Testten önce bilgilendirme ve onay ekranı gösterilir.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════ SİMÜLASYON TESTİ ═════════ -->
+<div id="test" class="page">
+  <div class="test-wrapper">
+
+    <!-- Adım 0: Onam -->
+    <div id="test-step-0" class="content-box">
+      <div class="step-tag">ADIM 1 / 4</div>
+      <div class="step-title">BİLGİLENDİRME VE GÖNÜLLÜ KATILIM ONAYI</div>
+      <div class="consent-text" id="consent-text">
+        <h4>ARAŞTIRMANIN AMACI</h4>
+        Bu araştırma, hız göstergesinde fren mesafesinin gösterilmesinin insanların "güvende hissettikleri en yüksek hız" tercihini etkileyip etkilemediğini incelemektedir. Çalışma, Boğazlıyan BİLSEM bünyesinde bir öğrenci araştırma projesi olarak yürütülmektedir.
+        <h4>NE YAPACAKSINIZ?</h4>
+        Önce kısa bir alıştırma yapacak, ardından farklı yol koşullarında (kuru, ıslak, buzlu) toplam 9 kısa denemede gaz ve fren ile bir aracı hızlandırıp kendinizi güvende hissettiğiniz en yüksek hızı yaklaşık 1 saniye sabit tutacaksınız. Toplam süre yaklaşık 5–8 dakikadır. Gerçek bir araç kullanılmaz, fiziksel risk yoktur.
+        <h4>GÖNÜLLÜLÜK</h4>
+        Katılım tamamen gönüllüdür. İstediğiniz anda sayfayı kapatarak çalışmadan ayrılabilirsiniz; bu durumda hiçbir veriniz kaydedilmez. Test sonunda verilerinizin gönderilmesini de reddedebilirsiniz.
+        <h4>TOPLANAN VERİLER</h4>
+        Cinsiyet, yaş aralığı, ehliyet durumu, geçmişte trafik kazası geçirip geçirmediğiniz (evet/hayır), simülasyondaki hız tercihleriniz, kullandığınız cihaz türü ve giriş yöntemi (fare, dokunmatik, pedal) ile onay zamanı. Ad, soyad, e-posta, telefon veya adres sorulmaz.
+        <h4>VERİLERİN KULLANIMI</h4>
+        Veriler yalnızca bu araştırma kapsamında, kimliğinizi belirleyemeyecek biçimde toplu olarak istatistiksel analiz edilir ve proje raporunda özetlenir. Üçüncü kişilerle paylaşılmaz.
+        <h4>VERİ SİLME TALEBİ</h4>
+        Test sonunda size rastgele bir katılımcı kodu verilecektir. Verinizin silinmesini isterseniz bu kodu proje ekibine iletmeniz yeterlidir (<span id="contact-slot">Boğazlıyan BİLSEM proje ekibi</span>).
+        <h4>YAŞ ŞARTI</h4>
+        Bu teste yalnızca 18 yaş ve üzeri kişiler katılabilir.
+      </div>
+      <label class="check-row"><input type="checkbox" id="chk-adult"> <span>18 yaşından büyük olduğumu beyan ederim.</span></label>
+      <label class="check-row"><input type="checkbox" id="chk-consent"> <span>Yukarıdaki bilgilendirmeyi okudum, anladım ve araştırmaya <b>gönüllü olarak</b> katılmayı kabul ediyorum.</span></label>
+      <button class="cta-btn" id="btn-consent" disabled>Onaylıyorum, Devam ➔</button>
+    </div>
+
+    <!-- Adım 1: Demografi -->
+    <div id="test-step-1" class="content-box" style="display:none">
+      <div class="step-tag">ADIM 2 / 4</div>
+      <div class="step-title">KATILIMCI BİLGİLERİ</div>
+      <div class="form-group"><label>CİNSİYETİNİZ</label><select id="user-gender"><option value="">Seçiniz</option><option>Kadın</option><option>Erkek</option></select></div>
+      <div class="form-group"><label>YAŞ ARALIĞI</label><select id="user-age"><option value="">Seçiniz</option><option>18–25</option><option>26–45</option><option>46+</option></select></div>
+      <div class="form-group"><label>EHLİYET DURUMU</label><select id="user-licence"><option value="">Seçiniz</option><option>Var</option><option>Yok</option></select></div>
+      <div class="form-group"><label>TRAFİK KAZASI GEÇİRDİNİZ Mİ?</label><select id="user-accident"><option value="">Seçiniz</option><option>Hayır</option><option>Evet</option></select></div>
+      <div id="demo-error" style="color:#ff6b4a;margin-bottom:12px;min-height:20px"></div>
+      <button class="cta-btn" id="btn-demo">Devam ➔</button>
+    </div>
+
+    <!-- Adım 2: Yönerge -->
+    <div id="test-step-2" class="content-box" style="display:none">
+      <div class="step-tag">ADIM 3 / 4</div>
+      <div class="step-title">YÖNERGE VE ALIŞTIRMA</div>
+      <div class="consent-text" style="max-height:none">
+        <h4>GÖREV</h4>
+        Gaz pedalına basarak aracı hızlandırın. <b>Kendinizi güvende hissettiğiniz en yüksek hıza</b> ulaşınca hızınızı (±5 km/h toleransla) <b>1 saniye sabit tutun</b>. Sistem hızı kaydeder ve bir sonraki denemeye geçer.
+        <h4>DENEMELER</h4>
+        Her biri farklı yol koşulunda ve gösterge düzeninde toplam 9 deneme vardır. Doğru ya da yanlış cevap yoktur; sizin kendi tercihiniz ölçülür.
+        <h4>KONTROLLER</h4>
+        Ekrandaki GAZ / FREN düğmeleri (fare veya dokunma), klavyede ↑ / ↓ tuşları veya bilgisayara bağlı bir direksiyon setinin pedalları. Direksiyon pedalları için sağ alttaki <b>🎮 DİREKSİYON</b> düğmesinden pedalları bir kez tanıtmanız gerekir (yalnızca pedallar kullanılır).
+      </div>
+      <button class="cta-btn" id="btn-practice">Alıştırmayı Başlat ➔</button>
+    </div>
+
+    <!-- Simülasyon alanı (alıştırma + 9 deneme) -->
+    <div id="test-sim-area" style="display:none">
+      <div class="phase-track" id="phase-track"></div>
+      <div class="trial-meta">
+        <div id="trial-label">ALIŞTIRMA</div>
+        <div>YOL: <b id="trial-weather">—</b></div>
+      </div>
+      <div class="instr-banner" id="instr-text"></div>
+
+      <div class="gauge-container">
+        <div class="overlay-msg" id="trial-overlay"><div class="big" id="overlay-big"></div><div class="small" id="overlay-small"></div></div>
+        <canvas id="testRoad" class="road-canvas" width="840" height="200"></canvas>
+        <div class="gauge-header">
+          <div>
+            <div class="readout-panel">
+              <div><div class="readout-label">ANLIK HIZ</div><span class="readout-value" id="test-speed-val" style="color:#00d4ff">0</span><span class="readout-unit">KM/H</span></div>
+              <div id="test-dist-item" style="display:none"><div class="readout-label">DURMA MESAFESİ</div><span class="readout-value" id="test-dist-val" style="color:#fff">0</span><span class="readout-unit">M</span></div>
+            </div>
+            <div class="danger-bar-wrap" id="test-danger-wrap" style="display:none"><div class="danger-bar-fill" id="test-danger-bar" style="width:0%;background:#2ecc71"></div></div>
+          </div>
+          <div style="text-align:right">
+            <div class="recording-pill" id="test-recording-status"><div class="rec-dot"></div>SABİTLENDİ</div>
+            <div id="stability-counter"></div>
+          </div>
+        </div>
+        <canvas id="testGauge" class="gauge-canvas" width="840" height="320"></canvas>
+        <div class="pedal-row">
+          <button class="pedal brake" data-key="brake"><span class="pedal-icon">⬛</span>FREN</button>
+          <button class="pedal gas" data-key="gas"><span class="pedal-icon">▶</span>GAZ</button>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:16px;display:none" id="practice-actions">
+        <button class="cta-btn" id="btn-start-trials">Alıştırmayı Bitir, Teste Başla ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="result-screen">
+    <div class="result-card">
+      <h2 class="result-title">SİMÜLASYON TAMAMLANDI</h2>
+      <div class="result-speeds">
+        <div class="result-speed-box"><div class="result-speed-label">KLASİK<br>ORT. HIZ</div><div class="result-speed-val" style="color:#00d4ff" id="res-klasik">—</div></div>
+        <div class="result-speed-box"><div class="result-speed-label">KLASİK + MESAFE<br>ORT. HIZ</div><div class="result-speed-val" style="color:#ffcc00" id="res-mesafe">—</div></div>
+        <div class="result-speed-box"><div class="result-speed-label">PFS<br>ORT. HIZ</div><div class="result-speed-val" style="color:var(--accent)" id="res-pfs">—</div></div>
+      </div>
+      <table class="result-table" id="res-table"></table>
+      <div class="result-message" id="res-message"></div>
+      <div class="pid-box">KATILIMCI KODUNUZ: <span id="res-pid">—</span><div class="pid-note">Verinizin silinmesini isterseniz bu kodu proje ekibine iletin.</div></div>
+      <div class="send-status" id="send-status"></div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="cta-btn" id="btn-send">Verilerimi Araştırmaya Gönder</button>
+        <button class="btn-secondary" id="btn-nosend">Göndermeden Çık</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════ SERBEST SÜRÜŞ ═════════ -->
+<div id="free" class="page">
+  <div class="sim-wrapper">
+    <div style="margin-bottom:24px;text-align:center">
+      <div class="gradient-heading">YOL KOŞULU SEÇENEKLERİ</div>
+      <div class="toggle-group" id="free-weather-btns">
+        <button class="toggle-btn dry active-btn" data-w="dry">☀️ KURU</button>
+        <button class="toggle-btn rain" data-w="rainy">🌧️ ISLAK</button>
+        <button class="toggle-btn ice" data-w="icy">🧊 BUZLU</button>
+      </div>
+      <div class="gradient-heading" style="margin-top:20px">GÖSTERGE EKRANI SEÇENEKLERİ</div>
+      <div class="toggle-group" id="free-gauge-btns">
+        <button class="toggle-btn g active-btn" data-g="klasik">KLASİK GÖSTERGE</button>
+        <button class="toggle-btn g" data-g="mesafe">KLASİK + MESAFE</button>
+        <button class="toggle-btn g" data-g="pfs">PFS EKRANI</button>
+      </div>
+    </div>
+
+    <div class="gauge-container">
+      <canvas id="freeRoad" class="road-canvas" width="840" height="200"></canvas>
+      <div class="gauge-header">
+        <div>
+          <div class="readout-panel">
+            <div><div class="readout-label">ANLIK HIZ</div><span class="readout-value" id="free-speed-val" style="color:#00d4ff">0</span><span class="readout-unit">KM/H</span></div>
+            <div id="free-dist-item" style="display:none"><div class="readout-label">DURMA MESAFESİ</div><span class="readout-value" id="free-dist-val" style="color:#fff">0</span><span class="readout-unit">M</span></div>
+          </div>
+          <div class="danger-bar-wrap" id="free-danger-wrap" style="display:none"><div class="danger-bar-fill" id="free-danger-bar" style="width:0%;background:#2ecc71"></div></div>
+          <div class="dist-legend" id="free-legend" style="display:none">
+            <div class="dist-legend-item"><div class="dist-legend-dot" style="background:#2ecc71"></div>GÜVENLİ</div>
+            <div class="dist-legend-item"><div class="dist-legend-dot" style="background:#ffcc00"></div>DİKKATLİ</div>
+            <div class="dist-legend-item"><div class="dist-legend-dot" style="background:#ff3300"></div>TEHLİKELİ</div>
+          </div>
+        </div>
+        <div class="mode-badge classic" id="free-mode-badge">KLASİK GÖSTERGE</div>
+      </div>
+      <canvas id="freeGauge" class="gauge-canvas" width="840" height="320"></canvas>
+      <div class="pedal-row">
+        <button class="pedal brake" data-key="brake"><span class="pedal-icon">⬛</span>FREN</button>
+        <button class="pedal gas" data-key="gas"><span class="pedal-icon">▶</span>GAZ</button>
+      </div>
+    </div>
+
+    <div id="pfs-explainer" style="display:none;margin-top:20px;background:rgba(255,51,0,.06);border:1px solid rgba(255,51,0,.2);border-radius:6px;padding:22px;font-size:16px;color:#a0aec0;line-height:1.7">
+      <b style="color:var(--accent);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px">PFS NASIL OKUNUR?</b><br><br>
+      Kadrandaki hız rakamları, <b>kuru zeminde</b> o hızın toplam durma mesafesine (3 sn tepki süresi + frenleme) göre yerleştirilmiştir; bu yüzden rakamlar sağa doğru seyrekleşir. İçteki renkli yay ise <b>seçili yol koşulundaki gerçek durma mesafesini</b> gösterir. Islak veya buzlu zeminde yay, ibrenin ilerisine uzanır.<br><br>
+      Şu an <span id="pfs-explainer-speed" style="color:#fff;font-family:'Orbitron',sans-serif;font-weight:700">0 KM/H</span> hızla giderken aniden durmanız gerekirse, önce tepki verecek sonra fren yapacaksınız ve yaklaşık <span id="pfs-explainer-dist" style="color:var(--accent);font-family:'Orbitron',sans-serif;font-weight:700;font-size:20px">0 METRE</span> sonra durabileceksiniz.
+    </div>
+  </div>
+</div>
+
+<!-- ═════════ AKADEMİK ANALİZ ═════════ -->
+<div id="analysis" class="page">
+  <div class="analysis-dashboard">
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">GEÇERLİ KATILIMCI (N)</div><div class="kpi-value" id="kpi-n">—</div><div class="kpi-sub" id="kpi-n-sub">Veri yükleniyor</div></div>
+      <div class="kpi-card"><div class="kpi-label">ORT. HIZ FARKI (KLASİK − PFS)</div><div class="kpi-value" style="color:var(--accent)" id="kpi-drop">—</div><div class="kpi-sub" id="kpi-drop-sub">km/h (+ değer: PFS'de daha düşük hız)</div></div>
+      <div class="kpi-card"><div class="kpi-label">EŞLİ t-TESTİ p DEĞERİ</div><div class="kpi-value" id="kpi-p">—</div><div class="kpi-sub" id="kpi-p-sub"></div></div>
+      <div class="kpi-card"><div class="kpi-label">ETKİ BÜYÜKLÜĞÜ (dz)</div><div class="kpi-value" id="kpi-d">—</div><div class="kpi-sub" id="kpi-d-sub"></div></div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="chart-header">📋 EŞLİ KARŞILAŞTIRMALAR (KATILIMCI BAŞINA 3 YOL KOŞULU ORTALAMASI)</div>
+      <table class="stat-table" id="stat-table"></table>
+      <div class="small-note">p<sub>düz.</sub>: 3 karşılaştırma için Bonferroni düzeltmesi (p × 3). GA: ortalama farkın %95 güven aralığı. dz: eşli örneklemler için Cohen'in etki büyüklüğü. Wilcoxon: işaretli sıralar testi (normal yaklaşım, bağ düzeltmeli).</div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-header">📊 YOL KOŞULUNA GÖRE ORTALAMA SEÇİLEN HIZ</div>
+        <div class="chart-desc">Üç gösterge düzeninde, kuru, ıslak ve buzlu zeminde katılımcıların seçtiği ortalama hız (km/h).</div>
+        <div class="chart-container"><canvas id="weatherChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">📊 KATILIMCI FARKLARININ DAĞILIMI</div>
+        <div class="chart-desc">Her katılımcı için (Klasik − PFS) ortalama hız farkının dağılımı. 0'ın sağı, PFS'de daha düşük hız seçildiğini gösterir.</div>
+        <div class="chart-container"><canvas id="histChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">📊 GRUP BAZLI ORTALAMA FARK</div>
+        <div class="chart-desc">
+          <select id="group-select" style="max-width:260px;padding:8px">
+            <option value="cinsiyet">Cinsiyet</option><option value="yas_araligi">Yaş aralığı</option><option value="ehliyet">Ehliyet</option><option value="kaza">Kaza geçmişi</option><option value="girdi">Giriş yöntemi</option><option value="cihaz">Cihaz</option>
+          </select>
+          <div style="margin-top:8px">Seçilen gruba göre ortalama (Klasik − PFS) hız farkı. Çubuk etiketlerindeki n, gruptaki kişi sayısıdır.</div>
+        </div>
+        <div class="chart-container"><canvas id="groupChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">📊 SIRA ETKİSİ KONTROLÜ</div>
+        <div class="chart-desc">Gösterge sunum sırasına göre ortalama (Klasik − PFS) farkı. Sıra etkisi yoksa gruplar birbirine yakın olmalıdır.</div>
+        <div class="chart-container"><canvas id="orderChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="academic-box">
+      <div class="academic-title">🔍 OTOMATİK ÖZET (VERİDEN HESAPLANIR)</div>
+      <div class="academic-text" id="auto-text">Veri yükleniyor…</div>
+      <div class="small-note">Sınırlılıklar: Ölçülen değişken, simülasyonda "güvende hissedilen en yüksek hız" tercihidir; gerçek sürüş davranışı değildir. Katılımcılar gönüllü ve çevrim içi toplandığı için örneklem rastgele değildir. Rapordaki nihai analizler ham veri üzerinden bir istatistik yazılımıyla (ör. SPSS, jamovi) da doğrulanmalıdır (normallik testi dâhil).</div>
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-secondary" id="btn-csv">Anonim Ham Veriyi İndir (CSV)</button>
+        <button class="btn-secondary" id="btn-reload">Yenile</button>
+      </div>
+      <div class="spss-tag" id="data-tag">Veri kaynağı: Google Sheets (anonim) | Hesaplama: tarayıcı içi (eşli t, Wilcoxon) | Grafik: Chart.js</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">PFS PROJESİ</div>
+  <div class="footer-text">
+    2204-B Ortaokul Öğrencileri Araştırma Projeleri Yarışması kapsamında hazırlanmaktadır<br>
+    <span class="footer-glow">Boğazlıyan BİLSEM</span> · <span class="footer-highlight">Ravza Öztürk</span><br>
+    <span style="font-size:12px;opacity:.6;margin-top:10px;display:inline-block">Proje Danışmanı: Mustafa Öztürk | 2026</span>
+  </div>
+</footer>
+
+<!-- Direksiyon pedal paneli -->
+<button id="pedal-fab">🎮 DİREKSİYON</button>
+<div id="pedal-panel">
+  <div style="font:700 11px Orbitron,sans-serif;letter-spacing:2px;color:#ff3300;margin-bottom:10px">PEDAL KALİBRASYONU</div>
+  <div style="margin-bottom:10px">Direksiyon setini USB ile bağlayın, bir pedala basın. Sonra aşağıdaki butona tıklayıp <b>2,5 sn içinde</b> ilgili pedala sonuna kadar basın. Yalnızca pedallar kullanılır.</div>
+  <button id="cal-gas">Gaz pedalını tanıt</button><button id="cal-brake">Fren pedalını tanıt</button><button id="cal-reset">Sıfırla</button>
+  <div style="margin-top:8px;font-size:13px">Gaz</div><div class="meter"><div id="m-gas" style="background:#2ecc71"></div></div>
+  <div style="font-size:13px">Fren</div><div class="meter"><div id="m-brake" style="background:#e74c3c"></div></div>
+  <div id="cal-status" style="color:#00ff88;min-height:20px"></div>
+  <div id="cal-axes" style="font:12px monospace;color:#6b7a8d;word-break:break-all"></div>
+</div>
+
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════════════
+// AYARLAR
+// ═══════════════════════════════════════════════════════════
+const CONFIG = {
+  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbwixwofJoHkU8HrygJWh2AxMYSNHZMYlmkE26Tkdor3sRxpeSfwECkQUY2l5Bw8tKM/exec",
+  CONSENT_VERSION: "onam-v1-2026-11",
+  DATA_VERSION: "pfs-v2",
+  CONTACT_TEXT: "Boğazlıyan BİLSEM proje ekibi",   // buraya iletişim e-postası yazılabilir
+  HOLD_SECONDS: 1.0,        // hızın sabit tutulacağı süre
+  HOLD_TOLERANCE: 5,        // ± km/h
+  MIN_RECORD_SPEED: 40      // bunun altındaki hız kayda alınmaz
+};
+document.getElementById('contact-slot').textContent = CONFIG.CONTACT_TEXT;
+
+// ═══════════════════════════════════════════════════════════
+// FİZİK  (tüm değerler gerçek zamanlı, kare hızından bağımsızdır)
+// ═══════════════════════════════════════════════════════════
+const MU = { dry: 0.8, rainy: 0.4, icy: 0.12 };          // sürtünme katsayıları
+const REACTION_S = 3.0;                                    // tepki (intikal) süresi, sn
+const ACCEL = 30, DECAY = 6, BRAKE = 120;                  // km/h/sn (tüm yol koşullarında aynı)
+const MAX_SPEED = 144;
+function getDist(v, w) { if (v <= 0) return 0; const m = v / 3.6; return m * REACTION_S + (m * m) / (2 * MU[w] * 9.81); }
+const PFS_MAX_DIST = getDist(120, 'dry') * 1.2;
+function distRatio(v, w) { return Math.min(getDist(v, w) / PFS_MAX_DIST, 1); }
+function dangerColor(r) { return r < 0.4 ? '#2ecc71' : r < 0.7 ? '#ffcc00' : '#ff3300'; }
+const W_TR = { dry: 'KURU ASFALT', rainy: 'ISLAK ZEMİN', icy: 'BUZLU YOL' };
+const W_KEY = { dry: 'kuru', rainy: 'islak', icy: 'buzlu' };
+const G_LABEL = { klasik: 'KLASİK GÖSTERGE', mesafe: 'KLASİK + MESAFE', pfs: 'PFS GÖSTERGESİ' };
+
+function advanceSpeed(s, dt, gas, brake) {
+  s += (ACCEL * gas - (gas > 0.01 ? 0 : DECAY) - BRAKE * brake) * dt;
+  return Math.max(0, Math.min(MAX_SPEED, s));
+}
+
+// ═══════════════════════════════════════════════════════════
+// GÖSTERGE ÇİZİMİ
+// ═══════════════════════════════════════════════════════════
+function angleForSpeed(v, pfs) {
+  const s = Math.PI;
+  return pfs ? s + Math.min(getDist(v, 'dry') / PFS_MAX_DIST, 1) * Math.PI
+             : s + (Math.min(v, MAX_SPEED) / MAX_SPEED) * Math.PI;
+}
+function renderGauge(canvas, speed, gauge, weather) {
+  const pfs = gauge === 'pfs';
+  const ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const cx = W / 2, cy = H - 40, R = Math.min(W, H * 1.8) * 0.48, startA = Math.PI;
+  const theme = !pfs ? '#00d4ff' : (weather === 'dry' ? '#ffcc00' : weather === 'rainy' ? '#00ff88' : '#00d4ff');
+  ctx.lineCap = 'butt';
+  ctx.beginPath(); ctx.arc(cx, cy, R, startA, 0); ctx.strokeStyle = '#0d1117'; ctx.lineWidth = 18; ctx.stroke();
+  if (pfs) { ctx.beginPath(); ctx.arc(cx, cy, R - 26, startA, 0); ctx.strokeStyle = '#0a0c10'; ctx.lineWidth = 14; ctx.stroke(); }
+
+  if (pfs && speed > 0) {
+    const distM = getDist(speed, weather);
+    const dAng = startA + Math.min(distM / PFS_MAX_DIST, 1) * Math.PI;   // düzeltilmiş: mesafe doğrudan ölçeğe oranlanır
+    const grad = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+    grad.addColorStop(0, '#2ecc71'); grad.addColorStop(.45, '#ffcc00'); grad.addColorStop(.75, '#ff8800'); grad.addColorStop(1, '#ff3300');
+    ctx.beginPath(); ctx.arc(cx, cy, R - 26, startA, dAng); ctx.strokeStyle = grad; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.stroke();
+    ctx.lineCap = 'butt';
+    const la = Math.min(dAng, startA + Math.PI * .99);
+    const lx = cx + Math.cos(la) * (R - 26), ly = cy + Math.sin(la) * (R - 26);
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.8)'; ctx.shadowBlur = 6; ctx.fillStyle = '#fff'; ctx.font = 'bold 12px Orbitron';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(Math.round(distM) + 'm', lx + Math.cos(la) * 18, ly + Math.sin(la) * 18); ctx.restore();
+  }
+  const needle = angleForSpeed(speed, pfs);
+  if (speed > 0) {
+    ctx.beginPath(); ctx.arc(cx, cy, R, startA, needle); ctx.strokeStyle = !pfs ? '#00d4ff' : theme + 'aa';
+    ctx.lineWidth = !pfs ? 18 : 4; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineCap = 'butt';
+  }
+  [0, 20, 40, 60, 80, 100, 120, 140].forEach(v => {
+    const a = angleForSpeed(v, pfs); if (a > startA + Math.PI + .01) return;
+    const c = Math.cos(a), s = Math.sin(a), tO = R - 8, tI = !pfs ? R - 20 : R - 28;
+    ctx.beginPath(); ctx.strokeStyle = !pfs ? '#fff' : (v >= 100 ? '#ff5533' : v >= 60 ? '#888' : '#555'); ctx.lineWidth = 2.5;
+    ctx.moveTo(cx + c * tI, cy + s * tI); ctx.lineTo(cx + c * tO, cy + s * tO); ctx.stroke();
+    const lr = !pfs ? R - 35 : R - 48;
+    ctx.fillStyle = !pfs ? '#fff' : (v >= 100 ? '#ff7755' : v >= 60 ? '#aaa' : '#555');
+    ctx.font = 'bold 14px Orbitron'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(v, cx + c * lr, cy + s * lr);
+  });
+  for (let v = 10; v <= MAX_SPEED; v += 10) {
+    if (v % 20 === 0) continue;
+    const a = angleForSpeed(v, pfs); if (a > startA + Math.PI + .01) continue;
+    const c = Math.cos(a), s = Math.sin(a);
+    ctx.beginPath(); ctx.strokeStyle = !pfs ? '#555' : '#333'; ctx.lineWidth = 1.5;
+    ctx.moveTo(cx + c * (R - 10), cy + s * (R - 10)); ctx.lineTo(cx + c * (!pfs ? R - 15 : R - 22), cy + s * (!pfs ? R - 15 : R - 22)); ctx.stroke();
+  }
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(needle + Math.PI / 2);
+  ctx.shadowColor = !pfs ? '#00d4ff' : '#ff3300'; ctx.shadowBlur = 15;
+  ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(0, -(R - 32)); ctx.lineTo(6, 0); ctx.fillStyle = !pfs ? '#00d4ff' : '#ff3300'; ctx.fill(); ctx.restore();
+  ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI * 2); ctx.fillStyle = '#0a0d12'; ctx.fill();
+  ctx.strokeStyle = !pfs ? '#00d4ff' : '#ff3300'; ctx.lineWidth = 2.5; ctx.stroke();
+  // Not: göstergenin üzerinde "PFS/STD" gibi gösterge türünü ele veren yazı bilinçli olarak yoktur (kör test).
+}
+
+// ═══════════════════════════════════════════════════════════
+// YOL SAHNESİ (hıza bağlı akan görüntü)
+// ═══════════════════════════════════════════════════════════
+const RW = 840, RH = 200, HY = 70;
+const SCENES = {
+  dry:   { skyTop:'#4da6ff', skyBot:'#bfe3ff', ground:'#3f8f3a', road:'#3a3d42', edge:'#fff',    trunk:'#5b3a1e', leaf:'#2e7d32', snow:false, rain:false, sun:true },
+  rainy: { skyTop:'#4b5563', skyBot:'#8b95a1', ground:'#2c5a2f', road:'#23262b', edge:'#cfd6dd', trunk:'#3d2a17', leaf:'#1f4d24', snow:false, rain:true,  sun:false },
+  icy:   { skyTop:'#9db4c8', skyBot:'#e6eef5', ground:'#f4f8fb', road:'#b8c7d3', edge:'#fff',    trunk:'#4a3a2c', leaf:'#e9f2f8', snow:true,  rain:false, sun:false }
+};
+class Road {
+  constructor(canvas) { this.ctx = canvas.getContext('2d'); this.dash = 0; this.parts = []; this.trees = [];
+    for (let i = 0; i < 14; i++) { this.trees.push({ z: 4 + i * 8, side: -1, off: 7 + Math.random() * 6 }); this.trees.push({ z: 8 + i * 8, side: 1, off: 7 + Math.random() * 6 }); } }
+  draw(speedKmh, wk, dt) {
+    const sc = SCENES[wk] || SCENES.dry, ctx = this.ctx, cx = RW / 2, v = speedKmh / 3.6, now = performance.now();
+    const proj = z => 10 / z, gy = s => HY + 22 * s;
+    const sky = ctx.createLinearGradient(0, 0, 0, HY); sky.addColorStop(0, sc.skyTop); sky.addColorStop(1, sc.skyBot);
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, RW, HY + 1);
+    if (sc.sun) { ctx.fillStyle = 'rgba(255,236,150,.95)'; ctx.beginPath(); ctx.arc(680, 38, 18, 0, 7); ctx.fill(); }
+    else { ctx.fillStyle = sc.snow ? 'rgba(255,255,255,.55)' : 'rgba(40,45,55,.45)'; [[120,30,60],[330,22,80],[560,34,70]].forEach(([x,y,w]) => { ctx.beginPath(); ctx.ellipse(x, y, w, 16, 0, 0, 7); ctx.fill(); }); }
+    ctx.fillStyle = sc.ground; ctx.fillRect(0, HY, RW, RH - HY);
+    const sNear = (RH - HY) / 22, sFar = proj(300), hwN = 3.6 * 14 * sNear, hwF = 3.6 * 14 * sFar, yF = gy(sFar);
+    ctx.fillStyle = sc.road; ctx.beginPath(); ctx.moveTo(cx - hwF, yF); ctx.lineTo(cx + hwF, yF); ctx.lineTo(cx + hwN, RH); ctx.lineTo(cx - hwN, RH); ctx.closePath(); ctx.fill();
+    if (wk === 'rainy') { const g = ctx.createLinearGradient(0, HY, 0, RH); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(180,200,230,.18)'); ctx.fillStyle = g; ctx.fill(); }
+    ctx.strokeStyle = sc.edge; ctx.lineWidth = 3;
+    [-1, 1].forEach(sd => { ctx.beginPath(); ctx.moveTo(cx + sd * hwF * .92, yF); ctx.lineTo(cx + sd * hwN * .92, RH); ctx.stroke(); });
+    this.dash = (this.dash + v * dt) % 10; ctx.fillStyle = sc.edge;
+    for (let d = -this.dash; d < 150; d += 10) {
+      const z1 = Math.max(1.2, d), z2 = Math.max(1.2, d + 4); if (z2 <= 1.2) continue;
+      const s1 = proj(z1), s2 = proj(z2), y1 = gy(s1), y2 = gy(s2), w1 = .12 * 14 * s1, w2 = .12 * 14 * s2;
+      ctx.beginPath(); ctx.moveTo(cx - w1, y1); ctx.lineTo(cx + w1, y1); ctx.lineTo(cx + w2, y2); ctx.lineTo(cx - w2, y2); ctx.closePath(); ctx.fill();
+    }
+    this.trees.forEach(t => { t.z -= v * dt; if (t.z < 2.5) { t.z += 112; t.off = 7 + Math.random() * 6; } });
+    this.trees.slice().sort((a, b) => b.z - a.z).forEach(t => {
+      const s = proj(t.z), y = gy(s), x = cx + t.side * t.off * 14 * s, h = 6 * 14 * s * .45, tw = Math.max(1, .5 * 14 * s * .45);
+      if (x < -80 || x > RW + 80) return;
+      ctx.fillStyle = sc.trunk; ctx.fillRect(x - tw / 2, y - h * .4, tw, h * .4);
+      ctx.fillStyle = sc.leaf; ctx.beginPath(); ctx.moveTo(x, y - h); ctx.lineTo(x - h * .32, y - h * .3); ctx.lineTo(x + h * .32, y - h * .3); ctx.closePath(); ctx.fill();
+      if (sc.snow) { ctx.strokeStyle = '#9fb6c8'; ctx.lineWidth = 1; ctx.stroke(); }
+    });
+    if (sc.rain || sc.snow) {
+      const target = sc.rain ? 120 : 90;
+      while (this.parts.length < target) this.parts.push({ x: Math.random() * RW, y: Math.random() * RH, p: .6 + Math.random() * .8 });
+      ctx.strokeStyle = 'rgba(190,210,235,.6)'; ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1;
+      this.parts.forEach(q => {
+        if (sc.rain) { ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(q.x - 3, q.y + 12 * q.p); ctx.stroke(); q.y += 520 * q.p * dt; q.x -= 40 * dt; }
+        else { ctx.beginPath(); ctx.arc(q.x, q.y, 1.6 * q.p, 0, 7); ctx.fill(); q.y += 60 * q.p * dt; q.x += Math.sin(now / 700 + q.p * 9) * .4; }
+        if (q.y > RH) { q.y = -10; q.x = Math.random() * RW; } if (q.x < -10) q.x = RW + 10;
+      });
+    }
+    const k = Math.min(1, speedKmh / MAX_SPEED);
+    if (k > .05) { const vg = ctx.createRadialGradient(cx, HY + 40, RH * .5, cx, HY + 40, RW * .65); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, `rgba(0,0,0,${.15 + .45 * k})`); ctx.fillStyle = vg; ctx.fillRect(0, 0, RW, RH); }
+  }
+}
+const roadTest = new Road(document.getElementById('testRoad'));
+const roadFree = new Road(document.getElementById('freeRoad'));
+
+// ═══════════════════════════════════════════════════════════
+// GİRDİ: ekran düğmeleri, klavye, direksiyon pedalları (Gamepad API)
+// ═══════════════════════════════════════════════════════════
+const inp = { btn: { gas: 0, brake: 0 }, key: { gas: 0, brake: 0 }, pad: { gas: 0, brake: 0 }, lastPointer: 'fare' };
+document.querySelectorAll('.pedal').forEach(b => {
+  const k = b.dataset.key;
+  b.addEventListener('pointerdown', e => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch (_) {} inp.btn[k] = 1; inp.lastPointer = e.pointerType === 'touch' ? 'dokunmatik' : 'fare'; b.classList.add('active'); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => b.addEventListener(ev, () => { inp.btn[k] = 0; b.classList.remove('active'); }));
+  b.addEventListener('contextmenu', e => e.preventDefault());
+});
+addEventListener('keydown', e => { if (e.key === 'ArrowUp') { inp.key.gas = 1; e.preventDefault(); } if (e.key === 'ArrowDown') { inp.key.brake = 1; e.preventDefault(); } });
+addEventListener('keyup', e => { if (e.key === 'ArrowUp') inp.key.gas = 0; if (e.key === 'ArrowDown') inp.key.brake = 0; });
+
+const PEDAL_KEY = 'pfs_pedal_cfg_v2';
+let pedalCfg = null; try { pedalCfg = JSON.parse(localStorage.getItem(PEDAL_KEY)); } catch (_) {}
+function getPad() { const ps = navigator.getGamepads ? navigator.getGamepads() : []; for (const p of ps) if (p && p.connected) return p; return null; }
+function pedalLevel(pad, a) {
+  if (!a || pad.axes[a.axis] === undefined) return 0;
+  const span = a.press - a.rest; if (Math.abs(span) < 0.2) return 0;
+  const x = (pad.axes[a.axis] - a.rest) / span;
+  return Math.max(0, Math.min(1, x < 0.04 ? 0 : x));            // küçük ölü bölge
+}
+function pollPedals() {
+  const pad = getPad();
+  if (pad && pedalCfg) { inp.pad.gas = pedalLevel(pad, pedalCfg.gas); inp.pad.brake = pedalLevel(pad, pedalCfg.brake); }
+  else { inp.pad.gas = 0; inp.pad.brake = 0; }
+  if (panelOpen) {
+    document.getElementById('m-gas').style.width = (inp.pad.gas * 100) + '%';
+    document.getElementById('m-brake').style.width = (inp.pad.brake * 100) + '%';
+    document.getElementById('cal-axes').textContent = pad ? 'Eksenler: ' + Array.from(pad.axes).map(v => v.toFixed(2)).join(' | ') : 'Direksiyon algılanmadı (bir pedala basın).';
+  }
+}
+let panelOpen = false;
+const panel = document.getElementById('pedal-panel'), calStatus = document.getElementById('cal-status');
+document.getElementById('pedal-fab').onclick = () => { panelOpen = !panelOpen; panel.style.display = panelOpen ? 'block' : 'none'; };
+function calibrate(which) {
+  const pad = getPad(); if (!pad) { calStatus.textContent = 'Direksiyon bulunamadı. Bir pedala basıp tekrar deneyin.'; return; }
+  const rest = Array.from(pad.axes); let best = { axis: -1, diff: 0, press: 0 }; const t0 = performance.now();
+  calStatus.textContent = (which === 'gas' ? 'GAZ' : 'FREN') + ' pedalına sonuna kadar basın ve basılı tutun…';
+  (function sample() {
+    const p = getPad(); if (p) Array.from(p.axes).forEach((v, i) => { const d = Math.abs(v - rest[i]); if (d > best.diff) best = { axis: i, diff: d, press: v }; });
+    if (performance.now() - t0 < 2500) return requestAnimationFrame(sample);
+    if (best.diff < 0.4) { calStatus.textContent = 'Pedal hareketi algılanamadı. Tekrar deneyin.'; return; }
+    pedalCfg = pedalCfg || {}; pedalCfg[which] = { axis: best.axis, rest: rest[best.axis], press: best.press };
+    try { localStorage.setItem(PEDAL_KEY, JSON.stringify(pedalCfg)); } catch (_) {}
+    calStatus.textContent = (which === 'gas' ? 'Gaz' : 'Fren') + ' pedalı kaydedildi (eksen ' + best.axis + ').';
+  })();
+}
+document.getElementById('cal-gas').onclick = () => calibrate('gas');
+document.getElementById('cal-brake').onclick = () => calibrate('brake');
+document.getElementById('cal-reset').onclick = () => { pedalCfg = null; try { localStorage.removeItem(PEDAL_KEY); } catch (_) {} calStatus.textContent = 'Kalibrasyon silindi.'; };
+addEventListener('gamepadconnected', () => { calStatus.textContent = 'Direksiyon algılandı.'; });
+
+function levels(trackSources) {
+  const gas = Math.max(inp.btn.gas, inp.key.gas, inp.pad.gas), brake = Math.max(inp.btn.brake, inp.key.brake, inp.pad.brake);
+  if (trackSources && (gas > .05 || brake > .05)) {
+    if (inp.pad.gas > .05 || inp.pad.brake > .05) T.sources.add('pedal');
+    if (inp.btn.gas || inp.btn.brake) T.sources.add(inp.lastPointer);
+    if (inp.key.gas || inp.key.brake) T.sources.add('klavye');
+  }
+  return { gas, brake };
+}
+
+// ═══════════════════════════════════════════════════════════
+// SAYFA YÖNETİMİ
+// ═══════════════════════════════════════════════════════════
+let activePage = 'home';
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+  document.getElementById(p).classList.add('active'); activePage = p;
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.page === p));
+  scrollTo(0, 0);
+  if (p === 'analysis') loadAnalysis();
+}
+document.querySelectorAll('[data-page]').forEach(el => el.addEventListener('click', () => showPage(el.dataset.page)));
+
+// ═══════════════════════════════════════════════════════════
+// TEST AKIŞI
+// ═══════════════════════════════════════════════════════════
+const GAUGES = ['klasik', 'mesafe', 'pfs'];
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function newPid() { const ch = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; const r = new Uint8Array(8); crypto.getRandomValues(r); return 'PFS-' + Array.from(r, x => ch[x % ch.length]).join(''); }
+
+const T = {
+  state: 'idle',            // idle | practice | trial | done
+  plan: [], idx: -1, speed: 0, weather: 'dry', gauge: 'klasik',
+  base: 0, holdT: 0, sum: 0, cnt: 0, t0: 0, lockUntil: 0,
+  results: {}, sources: new Set(), pid: null, consentAt: null, demo: {}, gaugeOrder: [], weatherOrder: [], startedAt: 0, hz: 60
+};
+// Yenileme hızı tahmini (veri kalitesi için kaydedilir)
+(function measureHz() { const ts = []; function f(t) { ts.push(t); if (ts.length < 40) requestAnimationFrame(f); else { const d = ts.slice(1).map((x, i) => x - ts[i]).sort((a, b) => a - b); T.hz = Math.round(1000 / d[Math.floor(d.length / 2)]); } } requestAnimationFrame(f); })();
+
+const $ = id => document.getElementById(id);
+const chkA = $('chk-adult'), chkC = $('chk-consent'), btnC = $('btn-consent');
+function syncConsent() { btnC.disabled = !(chkA.checked && chkC.checked); }
+chkA.onchange = chkC.onchange = syncConsent;
+btnC.onclick = () => { T.consentAt = new Date().toISOString(); $('test-step-0').style.display = 'none'; $('test-step-1').style.display = 'block'; scrollTo(0, 0); };
+$('btn-demo').onclick = () => {
+  const d = { cinsiyet: $('user-gender').value, yas_araligi: $('user-age').value, ehliyet: $('user-licence').value, kaza: $('user-accident').value };
+  if (Object.values(d).some(v => !v)) { $('demo-error').textContent = 'Lütfen tüm alanları seçiniz.'; return; }
+  $('demo-error').textContent = ''; T.demo = d;
+  $('test-step-1').style.display = 'none'; $('test-step-2').style.display = 'block'; scrollTo(0, 0);
+};
+
+function buildTrack(n) { const t = $('phase-track'); t.innerHTML = ''; for (let i = 0; i < n; i++) { const d = document.createElement('div'); d.className = 'phase-dot'; d.id = 'pd' + i; t.appendChild(d); } }
+function setGaugeUI(prefix, gauge, weather) {
+  const distItem = $(prefix + '-dist-item'), wrap = $(prefix + '-danger-wrap');
+  distItem.style.display = gauge === 'klasik' ? 'none' : 'block';
+  wrap.style.display = gauge === 'pfs' ? 'block' : 'none';
+}
+$('btn-practice').onclick = () => {
+  $('test-step-2').style.display = 'none'; $('test-sim-area').style.display = 'block'; scrollTo(0, 0);
+  T.gaugeOrder = shuffle(GAUGES); T.weatherOrder = shuffle(['dry', 'rainy', 'icy']);
+  T.plan = []; T.weatherOrder.forEach(w => T.gaugeOrder.forEach(g => T.plan.push({ w, g })));
+  T.pid = newPid(); T.startedAt = Date.now(); T.results = {};
+  buildTrack(T.plan.length);
+  T.state = 'practice'; T.idx = -1; T.weather = 'dry'; T.gauge = 'klasik'; T.speed = 0; T.sources = new Set();
+  resetHold(); setGaugeUI('test', 'klasik', 'dry');
+  $('trial-label').textContent = 'ALIŞTIRMA (KAYDEDİLMEZ)'; $('trial-weather').textContent = W_TR.dry;
+  $('instr-text').innerHTML = '<b>ALIŞTIRMA:</b> Gaz ve frenle hızlanıp yavaşlamayı deneyin. Hazır olunca aşağıdaki düğmeyle teste geçin. Alıştırmada hızınız kaydedilmez.';
+  $('practice-actions').style.display = 'block';
+};
+$('btn-start-trials').onclick = () => { $('practice-actions').style.display = 'none'; T.sources = new Set(); startTrial(0); };
+
+function resetHold() { T.base = 0; T.holdT = 0; T.sum = 0; T.cnt = 0; $('test-recording-status').style.opacity = 0; $('stability-counter').style.opacity = 0; }
+function startTrial(i) {
+  T.idx = i; const p = T.plan[i]; T.weather = p.w; T.gauge = p.g; T.speed = 0; T.state = 'trial'; T.t0 = performance.now(); resetHold();
+  setGaugeUI('test', p.g, p.w);
+  $('trial-label').innerHTML = 'DENEME <b>' + (i + 1) + ' / ' + T.plan.length + '</b>'; $('trial-weather').textContent = W_TR[p.w];
+  document.querySelectorAll('.phase-dot').forEach((d, k) => d.className = 'phase-dot' + (k < i ? ' done' : k === i ? ' active' : ''));
+  $('instr-text').innerHTML = '<b>GÖREV:</b> Kendinizi güvende hissettiğiniz <b>en yüksek hıza</b> çıkın ve hızınızı (±' + CONFIG.HOLD_TOLERANCE + ' km/h) <b>1 saniye sabit tutun</b>.';
+  const prev = i > 0 ? T.plan[i - 1].w : null;
+  const msg = prev === null || prev !== p.w;
+  $('overlay-big').textContent = msg ? W_TR[p.w] : 'DENEME ' + (i + 1);
+  $('overlay-small').textContent = msg ? 'YOL KOŞULU DEĞİŞTİ · HAZIR OLUN' : 'HAZIR OLUN';
+  $('trial-overlay').style.display = 'flex'; T.lockUntil = performance.now() + 1500;
+}
+function completeTrial() {
+  const recorded = Math.round((T.sum / T.cnt) * 10) / 10, p = T.plan[T.idx];
+  T.results[W_KEY[p.w] + '_' + p.g] = recorded;
+  $('test-recording-status').style.opacity = 0; $('stability-counter').style.opacity = 0;
+  if (T.idx + 1 < T.plan.length) startTrial(T.idx + 1); else finishTest();
+}
+function stepTest(dt) {
+  if (T.state !== 'practice' && T.state !== 'trial') return;
+  const now = performance.now(), locked = T.state === 'trial' && now < T.lockUntil;
+  if (T.state === 'trial' && !locked && $('trial-overlay').style.display === 'flex') { $('trial-overlay').style.display = 'none'; T.t0 = now; }
+  if (locked) { T.speed = 0; } else { const l = levels(T.state === 'trial'); T.speed = advanceSpeed(T.speed, dt, l.gas, l.brake); }
+  updateReadouts('test', T.speed, T.gauge, T.weather);
+  if (T.state === 'trial' && !locked) {
+    const s = T.speed;
+    if (s > CONFIG.MIN_RECORD_SPEED && Math.abs(s - T.base) <= CONFIG.HOLD_TOLERANCE) {
+      T.holdT += dt; T.sum += s; T.cnt++;
+      $('test-recording-status').style.opacity = 1; $('stability-counter').style.opacity = 1;
+      $('stability-counter').textContent = Math.max(0, CONFIG.HOLD_SECONDS - T.holdT).toFixed(1) + 's';
+      if (T.holdT >= CONFIG.HOLD_SECONDS) completeTrial();
+    } else { T.base = s; T.holdT = 0; T.sum = 0; T.cnt = 0; $('test-recording-status').style.opacity = 0; $('stability-counter').style.opacity = 0; }
+  }
+  roadTest.draw(T.speed, T.weather, dt);
+  renderGauge($('testGauge'), T.speed, T.gauge, T.weather);
+}
+function updateReadouts(prefix, speed, gauge, weather) {
+  const ratio = distRatio(speed, weather);
+  $(prefix + '-speed-val').textContent = Math.round(speed);
+  $(prefix + '-speed-val').style.color = gauge === 'pfs' ? dangerColor(ratio) : '#00d4ff';
+  $(prefix + '-dist-val').textContent = Math.round(getDist(speed, weather));
+  $(prefix + '-dist-val').style.color = gauge === 'pfs' ? dangerColor(ratio) : '#fff';
+  const bar = $(prefix + '-danger-bar'); bar.style.width = (ratio * 100) + '%'; bar.style.background = dangerColor(ratio);
+}
+
+// — Sonuç ve gönderim —
+const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+function gaugeMean(res, g) { return mean(['kuru', 'islak', 'buzlu'].map(w => res[w + '_' + g])); }
+let payload = null, submitted = false;
+function finishTest() {
+  T.state = 'done';
+  const r = T.results;
+  $('res-klasik').textContent = gaugeMean(r, 'klasik').toFixed(0); $('res-mesafe').textContent = gaugeMean(r, 'mesafe').toFixed(0); $('res-pfs').textContent = gaugeMean(r, 'pfs').toFixed(0);
+  let html = '<tr><th>YOL</th><th>KLASİK</th><th>KLASİK+MESAFE</th><th>PFS</th></tr>';
+  [['kuru', 'Kuru'], ['islak', 'Islak'], ['buzlu', 'Buzlu']].forEach(([k, n]) => html += `<tr><td>${n}</td><td>${r[k + '_klasik'].toFixed(0)}</td><td>${r[k + '_mesafe'].toFixed(0)}</td><td>${r[k + '_pfs'].toFixed(0)}</td></tr>`);
+  $('res-table').innerHTML = html;
+  const diff = gaugeMean(r, 'klasik') - gaugeMean(r, 'pfs');
+  $('res-message').innerHTML = diff > 0.5 ? `PFS göstergesinde seçtiğiniz hız, klasik göstergeye göre ortalama <b>${diff.toFixed(0)} km/h</b> daha düşüktü.`
+    : diff < -0.5 ? `PFS göstergesinde seçtiğiniz hız, klasik göstergeye göre ortalama <b>${Math.abs(diff).toFixed(0)} km/h</b> daha yüksekti.`
+    : 'Klasik ve PFS göstergelerinde seçtiğiniz hız yaklaşık aynıydı.';
+  $('res-pid').textContent = T.pid;
+  const src = T.sources.size ? Array.from(T.sources).sort().join('+') : 'bilinmiyor';
+  payload = Object.assign({
+    action: 'submit', surum: CONFIG.DATA_VERSION, katilimci_id: T.pid, onam_surumu: CONFIG.CONSENT_VERSION, onam_zamani: T.consentAt,
+    cihaz: matchMedia('(pointer:coarse)').matches ? 'mobil' : 'masaustu', girdi: src, yenileme_hz: T.hz,
+    olcek_sirasi: T.gaugeOrder.join('>'), hava_sirasi: T.weatherOrder.join('>'), toplam_sure_sn: Math.round((Date.now() - T.startedAt) / 1000)
+  }, T.demo, T.results);
+  submitted = false; $('send-status').textContent = ''; $('btn-send').disabled = false; $('btn-send').textContent = 'Verilerimi Araştırmaya Gönder';
+  $('result-screen').style.display = 'flex';
+}
+async function sendData() {
+  if (submitted || !payload) return;
+  $('btn-send').disabled = true; $('send-status').style.color = '#ffcc00'; $('send-status').textContent = 'Gönderiliyor… ⏳';
+  try {
+    const res = await fetch(CONFIG.WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || 'Sunucu veriyi reddetti');
+    submitted = true; try { localStorage.setItem('pfs_done', T.pid); } catch (_) {}
+    $('send-status').style.color = '#00ff88'; $('send-status').textContent = 'Verileriniz kaydedildi. Katıldığınız için teşekkürler!';
+    $('btn-send').textContent = 'Gönderildi ✔';
+    setTimeout(() => { $('result-screen').style.display = 'none'; showPage('analysis'); }, 1800);
+  } catch (err) {
+    $('btn-send').disabled = false; $('send-status').style.color = '#ff6b4a';
+    $('send-status').textContent = 'Gönderilemedi (' + (err.message || 'bağlantı hatası') + '). İnternetinizi kontrol edip tekrar deneyin.';
+  }
+}
+$('btn-send').onclick = sendData;
+$('btn-nosend').onclick = () => location.reload();
+
+// ═══════════════════════════════════════════════════════════
+// SERBEST SÜRÜŞ
+// ═══════════════════════════════════════════════════════════
+const F = { speed: 0, weather: 'dry', gauge: 'klasik' };
+$('free-weather-btns').addEventListener('click', e => { const b = e.target.closest('[data-w]'); if (!b) return; F.weather = b.dataset.w; document.querySelectorAll('#free-weather-btns .toggle-btn').forEach(x => x.classList.toggle('active-btn', x === b)); });
+$('free-gauge-btns').addEventListener('click', e => {
+  const b = e.target.closest('[data-g]'); if (!b) return; F.gauge = b.dataset.g;
+  document.querySelectorAll('#free-gauge-btns .toggle-btn').forEach(x => x.classList.toggle('active-btn', x === b));
+  const badge = $('free-mode-badge'); badge.className = 'mode-badge ' + (F.gauge === 'pfs' ? 'pfs' : F.gauge === 'mesafe' ? 'dist' : 'classic'); badge.textContent = G_LABEL[F.gauge];
+  $('pfs-explainer').style.display = F.gauge === 'pfs' ? 'block' : 'none'; $('free-legend').style.display = F.gauge === 'pfs' ? 'flex' : 'none';
+  setGaugeUI('free', F.gauge, F.weather);
+});
+function stepFree(dt) {
+  const l = levels(false); F.speed = advanceSpeed(F.speed, dt, l.gas, l.brake);
+  updateReadouts('free', F.speed, F.gauge, F.weather);
+  if (F.gauge === 'pfs') { $('pfs-explainer-speed').textContent = Math.round(F.speed) + ' KM/H'; $('pfs-explainer-dist').textContent = Math.round(getDist(F.speed, F.weather)) + ' METRE'; }
+  roadFree.draw(F.speed, F.weather, dt); renderGauge($('freeGauge'), F.speed, F.gauge, F.weather);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ANA DÖNGÜ
+// ═══════════════════════════════════════════════════════════
+let lastT = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+  pollPedals();
+  if (activePage === 'test') stepTest(dt); else if (activePage === 'free') stepFree(dt);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+// Sayfa/sekme değişince bırakılmış girdileri sıfırla
+document.addEventListener('visibilitychange', () => { inp.btn.gas = inp.btn.brake = inp.key.gas = inp.key.brake = 0; });
+
+// ═══════════════════════════════════════════════════════════
+// İSTATİSTİK
+// ═══════════════════════════════════════════════════════════
+function lgamma(x) { const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5]; let y = x, t = x + 5.5; t -= (x + 0.5) * Math.log(t); let s = 1.000000000190015; for (let j = 0; j < 6; j++) s += c[j] / ++y; return -t + Math.log(2.5066282746310005 * s / x); }
+function betacf(a, b, x) { const FP = 1e-300; let qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < FP) d = FP; d = 1 / d; let h = d;
+  for (let m = 1; m <= 300; m++) { const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2)); d = 1 + aa * d; if (Math.abs(d) < FP) d = FP; c = 1 + aa / c; if (Math.abs(c) < FP) c = FP; d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2)); d = 1 + aa * d; if (Math.abs(d) < FP) d = FP; c = 1 + aa / c; if (Math.abs(c) < FP) c = FP; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 3e-12) break; } return h; }
+function ibeta(x, a, b) { if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x)); return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b; }
+function tTwoP(t, df) { return ibeta(df / (df + t * t), df / 2, 0.5); }
+function tCrit(df) { let lo = 0, hi = 60; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (1 - 0.5 * tTwoP(m, df) < 0.975) lo = m; else hi = m; } return (lo + hi) / 2; }
+function erf(x) { const s = x < 0 ? -1 : 1; x = Math.abs(x); const t = 1 / (1 + 0.3275911 * x); return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x)); }
+const normCdf = z => 0.5 * (1 + erf(z / Math.SQRT2));
+function sd(a) { const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1)); }
+function pairedStats(x, y) {                 // fark = x − y
+  const d = x.map((v, i) => v - y[i]), n = d.length, md = mean(d), s = n > 1 ? sd(d) : NaN, se = s / Math.sqrt(n);
+  const t = md / se, df = n - 1, p = tTwoP(t, df), tc = tCrit(df);
+  return { n, mx: mean(x), my: mean(y), md, sd: s, t, df, p, ci: [md - tc * se, md + tc * se], dz: md / s, wp: wilcoxon(d) };
+}
+function wilcoxon(d) {
+  const nz = d.filter(v => Math.abs(v) > 1e-9); const n = nz.length; if (n < 6) return NaN;
+  const idx = nz.map((v, i) => i).sort((a, b) => Math.abs(nz[a]) - Math.abs(nz[b])), rank = new Array(n); let tie = 0;
+  for (let i = 0; i < n;) { let j = i; while (j + 1 < n && Math.abs(Math.abs(nz[idx[j + 1]]) - Math.abs(nz[idx[i]])) < 1e-9) j++; const r = (i + j) / 2 + 1; for (let k = i; k <= j; k++) rank[idx[k]] = r; const c = j - i + 1; tie += c ** 3 - c; i = j + 1; }
+  let wp = 0; nz.forEach((v, i) => { if (v > 0) wp += rank[i]; });
+  const mu = n * (n + 1) / 4, sg = Math.sqrt(n * (n + 1) * (2 * n + 1) / 24 - tie / 48); if (sg === 0) return NaN;
+  const z = (Math.abs(wp - mu) - 0.5) / sg; return 2 * (1 - normCdf(Math.max(z, 0)));
+}
+const fmtP = p => isNaN(p) ? '—' : p < 0.001 ? '< 0,001' : p.toFixed(3).replace('.', ',');
+const pTxt = p => isNaN(p) ? 'p hesaplanamadı' : p < 0.001 ? 'p < 0,001' : 'p = ' + fmtP(p);
+const f1 = x => isNaN(x) ? '—' : x.toFixed(1).replace('.', ',');
+const f2 = x => isNaN(x) ? '—' : x.toFixed(2).replace('.', ',');
+
+// ═══════════════════════════════════════════════════════════
+// ANALİZ SAYFASI
+// ═══════════════════════════════════════════════════════════
+const COLS = ['kuru_klasik', 'kuru_mesafe', 'kuru_pfs', 'islak_klasik', 'islak_mesafe', 'islak_pfs', 'buzlu_klasik', 'buzlu_mesafe', 'buzlu_pfs'];
+let allRows = [], validRows = [], charts = {};
+function isValid(r) { return COLS.every(c => { const v = parseFloat(r[c]); return isFinite(v) && v >= CONFIG.MIN_RECORD_SPEED && v <= MAX_SPEED + 1; }); }
+const gm = (r, g) => mean(['kuru', 'islak', 'buzlu'].map(w => parseFloat(r[w + '_' + g])));
+
+async function loadAnalysis() {
+  $('kpi-n').textContent = '…'; $('auto-text').textContent = 'Veri yükleniyor…';
+  try {
+    const res = await fetch(CONFIG.WEB_APP_URL + '?action=rows&_=' + Date.now()); const j = await res.json();
+    allRows = Array.isArray(j.rows) ? j.rows : [];
+  } catch (e) { $('kpi-n').textContent = '!'; $('kpi-n-sub').textContent = 'Bağlantı hatası'; $('auto-text').textContent = 'Veri alınamadı. Sayfayı yenileyin.'; return; }
+  validRows = allRows.filter(isValid); renderAnalysis();
+}
+$('btn-reload').onclick = loadAnalysis;
+$('group-select').onchange = () => renderGroupChart();
+
+function mkChart(id, cfg) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart($(id).getContext('2d'), cfg); }
+function baseOpts(extra) { return Object.assign({ responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255,255,255,.07)' } }, x: { grid: { display: false } } } }, extra || {}); }
+
+function renderAnalysis() {
+  const n = validRows.length;
+  $('kpi-n').textContent = n; $('kpi-n-sub').textContent = `Toplam kayıt: ${allRows.length} · Geçersiz/eksik: ${allRows.length - n}`;
+  if (n < 3) { ['kpi-drop', 'kpi-p', 'kpi-d'].forEach(i => $(i).textContent = '—'); $('auto-text').textContent = 'İstatistik hesaplamak için en az 3 geçerli katılımcı gerekir.'; $('stat-table').innerHTML = ''; Object.values(charts).forEach(c => c.destroy()); charts = {}; return; }
+  Chart.defaults.color = '#8b9bb4'; Chart.defaults.font.family = "'Orbitron', sans-serif";
+  const K = validRows.map(r => gm(r, 'klasik')), M = validRows.map(r => gm(r, 'mesafe')), P = validRows.map(r => gm(r, 'pfs'));
+  const kp = pairedStats(K, P), km = pairedStats(K, M), mp = pairedStats(M, P);
+  $('kpi-drop').innerHTML = f1(kp.md) + ' <small>km/h</small>';
+  $('kpi-drop-sub').textContent = `%95 GA [${f1(kp.ci[0])} ; ${f1(kp.ci[1])}] · + değer: PFS'de daha düşük hız`;
+  $('kpi-p').textContent = fmtP(kp.p); $('kpi-p').style.color = kp.p < 0.05 ? '#00ff88' : '#ffcc00';
+  $('kpi-p-sub').textContent = kp.p < 0.05 ? 'p < 0,05: fark istatistiksel olarak anlamlı' : 'p ≥ 0,05: anlamlı fark bulunamadı';
+  $('kpi-d').textContent = f2(kp.dz); const a = Math.abs(kp.dz); $('kpi-d-sub').textContent = a < 0.2 ? 'çok küçük' : a < 0.5 ? 'küçük' : a < 0.8 ? 'orta' : 'büyük';
+
+  const rows = [['Klasik − PFS', kp], ['Klasik − Klasik+Mesafe', km], ['Klasik+Mesafe − PFS', mp]];
+  $('stat-table').innerHTML = '<tr><th>KARŞILAŞTIRMA</th><th>ORT. A</th><th>ORT. B</th><th>FARK</th><th>%95 GA</th><th>t (sd)</th><th>p</th><th>p düz.</th><th>Wilcoxon p</th><th>dz</th></tr>' +
+    rows.map(([nm, s]) => `<tr><td>${nm}</td><td>${f1(s.mx)}</td><td>${f1(s.my)}</td><td>${f1(s.md)}</td><td>[${f1(s.ci[0])} ; ${f1(s.ci[1])}]</td><td>${f2(s.t)} (${s.df})</td><td>${fmtP(s.p)}</td><td>${fmtP(Math.min(1, s.p * 3))}</td><td>${fmtP(s.wp)}</td><td>${f2(s.dz)}</td></tr>`).join('');
+
+  // Grafik 1: yol × gösterge
+  const mw = g => ['kuru', 'islak', 'buzlu'].map(w => mean(validRows.map(r => parseFloat(r[w + '_' + g]))));
+  mkChart('weatherChart', { type: 'bar', data: { labels: ['Kuru', 'Islak', 'Buzlu'], datasets: [
+    { label: 'Klasik', data: mw('klasik'), backgroundColor: 'rgba(0,212,255,.75)', borderRadius: 4 },
+    { label: 'Klasik+Mesafe', data: mw('mesafe'), backgroundColor: 'rgba(255,204,0,.75)', borderRadius: 4 },
+    { label: 'PFS', data: mw('pfs'), backgroundColor: 'rgba(255,51,0,.75)', borderRadius: 4 }] },
+    options: baseOpts({ plugins: { legend: { display: true } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'km/h' }, grid: { color: 'rgba(255,255,255,.07)' } }, x: { grid: { display: false } } } }) });
+  // Grafik 2: histogram
+  const diffs = K.map((k, i) => k - P[i]), lo = -40, step = 5, bins = 16, counts = new Array(bins).fill(0);
+  diffs.forEach(d => { let b = Math.floor((d - lo) / step); b = Math.max(0, Math.min(bins - 1, b)); counts[b]++; });
+  mkChart('histChart', { type: 'bar', data: { labels: counts.map((_, i) => `${lo + i * step}…${lo + (i + 1) * step}`), datasets: [{ data: counts, backgroundColor: counts.map((_, i) => lo + i * step >= 0 ? 'rgba(0,255,136,.7)' : 'rgba(255,51,0,.7)'), borderRadius: 3 }] },
+    options: baseOpts({ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'kişi' }, grid: { color: 'rgba(255,255,255,.07)' } }, x: { ticks: { maxRotation: 60, font: { size: 9 } }, grid: { display: false } } } }) });
+  renderGroupChart(); renderOrderChart();
+
+  // Otomatik özet
+  const dirTxt = kp.p < 0.05 ? (kp.md > 0 ? 'PFS göstergesinde klasik göstergeye göre <b>anlamlı biçimde daha düşük</b> hız seçilmiştir' : 'PFS göstergesinde klasik göstergeye göre <b>anlamlı biçimde daha yüksek</b> hız seçilmiştir')
+    : 'klasik ve PFS göstergeleri arasında seçilen hız bakımından <b>istatistiksel olarak anlamlı bir fark bulunamamıştır</b>';
+  $('auto-text').innerHTML = `Geçerli katılımcı sayısı N = ${n} (toplam kayıt: ${allRows.length}). Katılımcıların seçtiği ortalama hız klasik göstergede ${f1(kp.mx)} km/h (SS = ${f1(sd(K))}), klasik+mesafe göstergesinde ${f1(km.my)} km/h (SS = ${f1(sd(M))}), PFS göstergesinde ${f1(kp.my)} km/h (SS = ${f1(sd(P))}) olarak hesaplanmıştır. Eşli örneklem t-testine göre t(${kp.df}) = ${f2(kp.t)}, ${pTxt(kp.p)}, ortalama fark = ${f1(kp.md)} km/h (%95 GA [${f1(kp.ci[0])} ; ${f1(kp.ci[1])}]), dz = ${f2(kp.dz)}; Wilcoxon işaretli sıralar testi ${pTxt(kp.wp)}. Bu verilere göre ${dirTxt}.`;
+  $('data-tag').textContent = `Veri kaynağı: Google Sheets (anonim) | Son güncelleme: ${new Date().toLocaleString('tr-TR')} | Hesaplama: tarayıcı içi (eşli t, Wilcoxon) | Grafik: Chart.js`;
+}
+function groupMeans(key) {
+  const g = {}; validRows.forEach(r => { const k = r[key]; if (k === undefined || k === '') return; (g[k] = g[k] || []).push(gm(r, 'klasik') - gm(r, 'pfs')); });
+  return g;
+}
+function renderGroupChart() {
+  if (validRows.length < 3) return; const key = $('group-select').value, g = groupMeans(key), labs = Object.keys(g).sort();
+  mkChart('groupChart', { type: 'bar', data: { labels: labs.map(l => `${l} (n=${g[l].length})`), datasets: [{ data: labs.map(l => mean(g[l])), backgroundColor: 'rgba(0,212,255,.75)', borderRadius: 4 }] },
+    options: baseOpts({ plugins: { legend: { display: false } }, scales: { y: { title: { display: true, text: 'Klasik − PFS (km/h)' }, grid: { color: 'rgba(255,255,255,.07)' } }, x: { grid: { display: false } } } }) });
+}
+function renderOrderChart() {
+  const g = {}; validRows.forEach(r => { const o = r.olcek_sirasi; if (!o) return; const first = String(o).split('>')[0]; const nm = first === 'klasik' ? 'Klasik önce' : first === 'mesafe' ? 'Mesafe önce' : 'PFS önce'; (g[nm] = g[nm] || []).push(gm(r, 'klasik') - gm(r, 'pfs')); });
+  const labs = Object.keys(g).sort();
+  mkChart('orderChart', { type: 'bar', data: { labels: labs.map(l => `${l} (n=${g[l].length})`), datasets: [{ data: labs.map(l => mean(g[l])), backgroundColor: 'rgba(255,204,0,.75)', borderRadius: 4 }] },
+    options: baseOpts({ plugins: { legend: { display: false } }, scales: { y: { title: { display: true, text: 'Klasik − PFS (km/h)' }, grid: { color: 'rgba(255,255,255,.07)' } }, x: { grid: { display: false } } } }) });
+}
+$('btn-csv').onclick = () => {
+  if (!allRows.length) return; const cols = Object.keys(allRows[0]);
+  const csv = [cols.join(',')].concat(allRows.map(r => cols.map(c => JSON.stringify(r[c] === undefined ? '' : r[c])).join(','))).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })); a.download = 'pfs_anonim_veri.csv'; a.click();
+};
+
+// Dışarıdan test için
+window.__PFS = { pairedStats, wilcoxon, tTwoP, tCrit, getDist, advanceSpeed, T, startTrial, levels, renderAnalysisWith: rows => { allRows = rows; validRows = rows.filter(isValid); renderAnalysis(); } };
+</script>
+</body>
+</html>
