@@ -206,7 +206,7 @@ footer{background:#030406;border-top:1px solid var(--border);padding:36px 20px;t
       <div class="method-text">
         <div class="sec-label">ARAŞTIRMA SORUSU</div>
         <h3>Fren Mesafesi Görünür Olursa Seçilen Hız Değişir mi?</h3>
-        <p>Psikolojik Frenleme Sistemi (PFS), kadranı hıza değil o hızdaki <b>toplam durma mesafesine</b> (3 sn tepki süresi + karesel frenleme) göre ölçeklendirir.</p>
+        <p>Psikolojik Frenleme Sistemi (PFS), hız kadranının yanına, <b>aynı çizgiler üzerinde</b> o hızdaki <b>toplam durma mesafesini</b> (3 sn tepki süresi + karesel frenleme) metre olarak gösteren bir yay ekler: yay 120. çizgideyse mesafe 120 m'dir.</p>
         <div class="rq-box"><b>Hipotez (H₁):</b> PFS göstergesiyle katılımcıların "güvende hissettiği en yüksek hız", klasik göstergeye göre daha düşüktür.<br><b>Sıfır hipotezi (H₀):</b> İki göstergede seçilen hız arasında fark yoktur.</div>
         <div class="highlight-box"><b style="color:var(--accent)">Olası uygulama:</b> Bulgular destekleyici çıkarsa bu fikir dijital kokpitlere yazılım güncellemesiyle (ör. yerli otomobil TOGG gibi dijital göstergeli araçlar) ya da artırılmış gerçeklik başlıklı ekranlara uyarlanabilir. Bu, bir öneridir; bu çalışmanın sonuçları gerçek sürüşü değil simülasyon tercihlerini ölçer.</div>
       </div>
@@ -378,7 +378,7 @@ footer{background:#030406;border-top:1px solid var(--border);padding:36px 20px;t
 
     <div id="pfs-explainer" style="display:none;margin-top:20px;background:rgba(255,51,0,.06);border:1px solid rgba(255,51,0,.2);border-radius:6px;padding:22px;font-size:16px;color:#a0aec0;line-height:1.7">
       <b style="color:var(--accent);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px">PFS NASIL OKUNUR?</b><br><br>
-      Kadrandaki hız rakamları, <b>kuru zeminde</b> o hızın toplam durma mesafesine (3 sn tepki süresi + frenleme) göre yerleştirilmiştir; bu yüzden rakamlar sağa doğru seyrekleşir. İçteki renkli yay ise <b>seçili yol koşulundaki gerçek durma mesafesini</b> gösterir. Islak veya buzlu zeminde yay, ibrenin ilerisine uzanır.<br><br>
+      Kadran hızı (km/h) doğrusal gösterir; ibre hızınızı işaret eder. İçteki renkli yay ise <b>aynı çizgiler üzerinde durma mesafesini metre olarak</b> gösterir: yay 120. çizgiye geldiyse durma mesafeniz 120 m, 140. çizgiye geldiyse 140 m'dir (3 sn tepki süresi + frenleme dâhil). Yayın ibrenin ne kadar önüne geçtiği, hızınızın size gösterdiğinden ne kadar daha fazla yol gerektirdiğini anlatır. Islak veya buzlu zeminde fark daha da açılır. Mesafe 144 m'yi aşarsa yay dolu kalır; gerçek değer sayıyla görünmeye devam eder.<br><br>
       Şu an <span id="pfs-explainer-speed" style="color:#fff;font-family:'Orbitron',sans-serif;font-weight:700">0 KM/H</span> hızla giderken aniden durmanız gerekirse, önce tepki verecek sonra fren yapacaksınız ve yaklaşık <span id="pfs-explainer-dist" style="color:var(--accent);font-family:'Orbitron',sans-serif;font-weight:700;font-size:20px">0 METRE</span> sonra durabileceksiniz.
     </div>
   </div>
@@ -468,7 +468,7 @@ footer{background:#030406;border-top:1px solid var(--border);padding:36px 20px;t
 // AYARLAR
 // ═══════════════════════════════════════════════════════════
 const CONFIG = {
-  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzQ88qTC1LWVwYwmWhTWOGiX_WK1x0CmxvKt7J-QXIyIOds5gyyzNJyFykhpSF9lwd-RQ/exec",
+  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbwixwofJoHkU8HrygJWh2AxMYSNHZMYlmkE26Tkdor3sRxpeSfwECkQUY2l5Bw8tKM/exec",
   CONSENT_VERSION: "onam-v1-2026-11",
   DATA_VERSION: "pfs-v2",
   CONTACT_TEXT: "Boğazlıyan BİLSEM proje ekibi",   // buraya iletişim e-postası yazılabilir
@@ -486,8 +486,10 @@ const REACTION_S = 3.0;                                    // tepki (intikal) s�
 const ACCEL = 30, DECAY = 6, BRAKE = 120;                  // km/h/sn (tüm yol koşullarında aynı)
 const MAX_SPEED = 144;
 function getDist(v, w) { if (v <= 0) return 0; const m = v / 3.6; return m * REACTION_S + (m * m) / (2 * MU[w] * 9.81); }
-const PFS_MAX_DIST = getDist(120, 'dry') * 1.2;
-function distRatio(v, w) { return Math.min(getDist(v, w) / PFS_MAX_DIST, 1); }
+// PFS ölçeği: kadran doğrusaldır (0–144) ve PFS yayı AYNI çizgiler üzerinde metreyi gösterir:
+// yay 120. çizgide ise 120 m, 140. çizgide ise 140 m demektir (1 km/h ↔ 1 m aynı açı).
+const PFS_SCALE = MAX_SPEED;
+function distRatio(v, w) { return Math.min(getDist(v, w) / PFS_SCALE, 1); }
 function dangerColor(r) { return r < 0.4 ? '#2ecc71' : r < 0.7 ? '#ffcc00' : '#ff3300'; }
 const W_TR = { dry: 'KURU ASFALT', rainy: 'ISLAK ZEMİN', icy: 'BUZLU YOL' };
 const W_KEY = { dry: 'kuru', rainy: 'islak', icy: 'buzlu' };
@@ -503,8 +505,7 @@ function advanceSpeed(s, dt, gas, brake) {
 // ═══════════════════════════════════════════════════════════
 function angleForSpeed(v, pfs) {
   const s = Math.PI;
-  // PFS daraltmasını iptal ettik. Kadran HER ZAMAN doğrusal ve eşit aralıklı kalacak.
-  return s + (Math.min(v, MAX_SPEED) / MAX_SPEED) * Math.PI;
+  return s + (Math.min(v, MAX_SPEED) / MAX_SPEED) * Math.PI;      // her iki modda da doğrusal hız kadranı
 }
 function renderGauge(canvas, speed, gauge, weather) {
   const pfs = gauge === 'pfs';
@@ -518,8 +519,7 @@ function renderGauge(canvas, speed, gauge, weather) {
 
   if (pfs && speed > 0) {
     const distM = getDist(speed, weather);
-    // PFS_MAX_DIST yerine MAX_SPEED yazdık. Böylece 142 metre, tam olarak 142 rakamına uzanacak.
-    const dAng = startA + Math.min(distM / MAX_SPEED, 1) * Math.PI;
+    const dAng = startA + Math.min(distM / PFS_SCALE, 1) * Math.PI;   // metre, hız çizgileriyle aynı açıya eşlenir
     const grad = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
     grad.addColorStop(0, '#2ecc71'); grad.addColorStop(.45, '#ffcc00'); grad.addColorStop(.75, '#ff8800'); grad.addColorStop(1, '#ff3300');
     ctx.beginPath(); ctx.arc(cx, cy, R - 26, startA, dAng); ctx.strokeStyle = grad; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.stroke();
