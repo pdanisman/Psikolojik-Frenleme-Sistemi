@@ -378,7 +378,7 @@ footer{background:#030406;border-top:1px solid var(--border);padding:36px 20px;t
 
     <div id="pfs-explainer" style="display:none;margin-top:20px;background:rgba(255,51,0,.06);border:1px solid rgba(255,51,0,.2);border-radius:6px;padding:22px;font-size:16px;color:#a0aec0;line-height:1.7">
       <b style="color:var(--accent);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px">PFS NASIL OKUNUR?</b><br><br>
-      Kadran hızı (km/h) doğrusal gösterir; ibre hızınızı işaret eder. İçteki renkli yay ise <b>aynı çizgiler üzerinde durma mesafesini metre olarak</b> gösterir: yay 120. çizgiye geldiyse durma mesafeniz 120 m, 140. çizgiye geldiyse 140 m'dir (3 sn tepki süresi + frenleme dâhil). Yayın ibrenin ne kadar önüne geçtiği, hızınızın size gösterdiğinden ne kadar daha fazla yol gerektirdiğini anlatır. Islak veya buzlu zeminde fark daha da açılır. Mesafe 144 m'yi aşarsa yay dolu kalır; gerçek değer sayıyla görünmeye devam eder.<br><br>
+      Kadran hızı (km/h) doğrusal gösterir; ibre hızınızı işaret eder. İçteki yay (PFS'de renk skalalı, Klasik + Mesafe'de tek renk) ise <b>aynı çizgiler üzerinde durma mesafesini metre olarak</b> gösterir: yay 120. çizgiye geldiyse durma mesafeniz 120 m, 140. çizgiye geldiyse 140 m'dir (3 sn tepki süresi + frenleme dâhil). Yayın ibrenin ne kadar önüne geçtiği, hızınızın size gösterdiğinden ne kadar daha fazla yol gerektirdiğini anlatır. Islak veya buzlu zeminde fark daha da açılır. Mesafe 144 m'yi aşarsa yay dolu kalır; gerçek değer sayıyla görünmeye devam eder.<br><br>
       Şu an <span id="pfs-explainer-speed" style="color:#fff;font-family:'Orbitron',sans-serif;font-weight:700">0 KM/H</span> hızla giderken aniden durmanız gerekirse, önce tepki verecek sonra fren yapacaksınız ve yaklaşık <span id="pfs-explainer-dist" style="color:var(--accent);font-family:'Orbitron',sans-serif;font-weight:700;font-size:20px">0 METRE</span> sonra durabileceksiniz.
     </div>
   </div>
@@ -509,20 +509,21 @@ function angleForSpeed(v, pfs) {
 }
 function renderGauge(canvas, speed, gauge, weather) {
   const pfs = gauge === 'pfs';
+  const ring = gauge !== 'klasik';     // 'mesafe' ve 'pfs': hız çizgileriyle aynı ölçekte durma mesafesi yayı çizilir
   const ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
   ctx.clearRect(0, 0, W, H);
   const cx = W / 2, cy = H - 40, R = Math.min(W, H * 1.8) * 0.48, startA = Math.PI;
   const theme = !pfs ? '#00d4ff' : (weather === 'dry' ? '#ffcc00' : weather === 'rainy' ? '#00ff88' : '#00d4ff');
   ctx.lineCap = 'butt';
   ctx.beginPath(); ctx.arc(cx, cy, R, startA, 0); ctx.strokeStyle = '#0d1117'; ctx.lineWidth = 18; ctx.stroke();
-  if (pfs) { ctx.beginPath(); ctx.arc(cx, cy, R - 26, startA, 0); ctx.strokeStyle = '#0a0c10'; ctx.lineWidth = 14; ctx.stroke(); }
+  if (ring) { ctx.beginPath(); ctx.arc(cx, cy, R - 26, startA, 0); ctx.strokeStyle = '#0a0c10'; ctx.lineWidth = 14; ctx.stroke(); }
 
-  if (pfs && speed > 0) {
+  if (ring && speed > 0) {
     const distM = getDist(speed, weather);
     const dAng = startA + Math.min(distM / PFS_SCALE, 1) * Math.PI;   // metre, hız çizgileriyle aynı açıya eşlenir
     const grad = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
     grad.addColorStop(0, '#2ecc71'); grad.addColorStop(.45, '#ffcc00'); grad.addColorStop(.75, '#ff8800'); grad.addColorStop(1, '#ff3300');
-    ctx.beginPath(); ctx.arc(cx, cy, R - 26, startA, dAng); ctx.strokeStyle = grad; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, R - 26, startA, dAng); ctx.strokeStyle = pfs ? grad : '#ffcc00'; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.stroke();
     ctx.lineCap = 'butt';
     const la = Math.min(dAng, startA + Math.PI * .99);
     const lx = cx + Math.cos(la) * (R - 26), ly = cy + Math.sin(la) * (R - 26);
@@ -532,14 +533,14 @@ function renderGauge(canvas, speed, gauge, weather) {
   const needle = angleForSpeed(speed, pfs);
   if (speed > 0) {
     ctx.beginPath(); ctx.arc(cx, cy, R, startA, needle); ctx.strokeStyle = !pfs ? '#00d4ff' : theme + 'aa';
-    ctx.lineWidth = !pfs ? 18 : 4; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineCap = 'butt';
+    ctx.lineWidth = ring ? 4 : 18; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineCap = 'butt';
   }
   [0, 20, 40, 60, 80, 100, 120, 140].forEach(v => {
     const a = angleForSpeed(v, pfs); if (a > startA + Math.PI + .01) return;
-    const c = Math.cos(a), s = Math.sin(a), tO = R - 8, tI = !pfs ? R - 20 : R - 28;
+    const c = Math.cos(a), s = Math.sin(a), tO = R - 8, tI = ring ? R - 28 : R - 20;
     ctx.beginPath(); ctx.strokeStyle = !pfs ? '#fff' : (v >= 100 ? '#ff5533' : v >= 60 ? '#888' : '#555'); ctx.lineWidth = 2.5;
     ctx.moveTo(cx + c * tI, cy + s * tI); ctx.lineTo(cx + c * tO, cy + s * tO); ctx.stroke();
-    const lr = !pfs ? R - 35 : R - 48;
+    const lr = ring ? R - 48 : R - 35;
     ctx.fillStyle = !pfs ? '#fff' : (v >= 100 ? '#ff7755' : v >= 60 ? '#aaa' : '#555');
     ctx.font = 'bold 14px Orbitron'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(v, cx + c * lr, cy + s * lr);
   });
@@ -548,7 +549,7 @@ function renderGauge(canvas, speed, gauge, weather) {
     const a = angleForSpeed(v, pfs); if (a > startA + Math.PI + .01) continue;
     const c = Math.cos(a), s = Math.sin(a);
     ctx.beginPath(); ctx.strokeStyle = !pfs ? '#555' : '#333'; ctx.lineWidth = 1.5;
-    ctx.moveTo(cx + c * (R - 10), cy + s * (R - 10)); ctx.lineTo(cx + c * (!pfs ? R - 15 : R - 22), cy + s * (!pfs ? R - 15 : R - 22)); ctx.stroke();
+    ctx.moveTo(cx + c * (R - 10), cy + s * (R - 10)); ctx.lineTo(cx + c * (ring ? R - 22 : R - 15), cy + s * (ring ? R - 22 : R - 15)); ctx.stroke();
   }
   ctx.save(); ctx.translate(cx, cy); ctx.rotate(needle + Math.PI / 2);
   ctx.shadowColor = !pfs ? '#00d4ff' : '#ff3300'; ctx.shadowBlur = 15;
@@ -837,13 +838,13 @@ $('free-gauge-btns').addEventListener('click', e => {
   const b = e.target.closest('[data-g]'); if (!b) return; F.gauge = b.dataset.g;
   document.querySelectorAll('#free-gauge-btns .toggle-btn').forEach(x => x.classList.toggle('active-btn', x === b));
   const badge = $('free-mode-badge'); badge.className = 'mode-badge ' + (F.gauge === 'pfs' ? 'pfs' : F.gauge === 'mesafe' ? 'dist' : 'classic'); badge.textContent = G_LABEL[F.gauge];
-  $('pfs-explainer').style.display = F.gauge === 'pfs' ? 'block' : 'none'; $('free-legend').style.display = F.gauge === 'pfs' ? 'flex' : 'none';
+  $('pfs-explainer').style.display = F.gauge !== 'klasik' ? 'block' : 'none'; $('free-legend').style.display = F.gauge === 'pfs' ? 'flex' : 'none';
   setGaugeUI('free', F.gauge, F.weather);
 });
 function stepFree(dt) {
   const l = levels(false); F.speed = advanceSpeed(F.speed, dt, l.gas, l.brake);
   updateReadouts('free', F.speed, F.gauge, F.weather);
-  if (F.gauge === 'pfs') { $('pfs-explainer-speed').textContent = Math.round(F.speed) + ' KM/H'; $('pfs-explainer-dist').textContent = Math.round(getDist(F.speed, F.weather)) + ' METRE'; }
+  if (F.gauge !== 'klasik') { $('pfs-explainer-speed').textContent = Math.round(F.speed) + ' KM/H'; $('pfs-explainer-dist').textContent = Math.round(getDist(F.speed, F.weather)) + ' METRE'; }
   roadFree.draw(F.speed, F.weather, dt); renderGauge($('freeGauge'), F.speed, F.gauge, F.weather);
 }
 
